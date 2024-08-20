@@ -21,12 +21,13 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.11.30",
-    "tsup": "^8.0.2",
-    "typescript": "^5.4.3"
+    "@types/node": "^22.4.1",
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4"
   },
   "dependencies": {
-    "chrome-launcher": "^1.1.1",
-    "lighthouse": "^11.7.1"
+    "chrome-launcher": "^1.1.2",
+    "lighthouse": "^12.2.0",
+    "web-vitals": "^4.2.3"
   }
 }
