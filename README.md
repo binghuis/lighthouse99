@@ -5,10 +5,10 @@
 
 本仓库内容是基于 [Chrome lighthouse 10 指南](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring?hl=zh-cn) 的实践。
 
-1. 重新认识前端性能优化
-2. 读懂 Lighthouse 10 的五个衡量指标
-3. 合理的收集 Lighthouse 指标。
-4. 性能问题分类以及各类问题的优化思路。
+1. [重新认识前端性能优化](./docs/reassessing-fe-performance-ptimization.md)
+2. [读懂 Lighthouse 10 的五个衡量指标](./docs/understanding-lighthouse-10-five-key-metrics.md)
+3. [合理的收集 Lighthouse 指标](./docs/collecting-lighthouse-metrics-best-practices.md)
+4. [性能问题分类以及各类问题的优化思路](./docs/performance-issue-types-optimization-strategies.md)
    - 图片、字体等静态资源
    - JS 执行
 5. 结果观察。
