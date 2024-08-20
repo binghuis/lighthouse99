@@ -12,4 +12,4 @@
 5. 性能问题分类以及各类问题的优化思路。
 6. 建立现代浏览器的“雅虎军规”。
 
-> 雅虎 35 条军规是曾经在前端非常流行的性能优化指南。[Best Practices for Speeding Up Your Web Site](https://developer.yahoo.com/performance/rules.html?guccounter=2&guce_referrer=aHR0cHM6Ly9saW5rLmp1ZWppbi5jbi8&guce_referrer_sig=AQAAABIG-sK7LvhBJGoQpmXlQ3F0k7BGe8SQLSFdnXV2p44uMadU0caOs9JvFbSQW8o5wil1Jt2HmQIMMNxDB3rplIY_q93YXslaLCEKqfaPcCn9_8YwHHWhXDnzRRIRZ8XjVv5u3cyo4ChUPbJjZ6hfRoQWBonSyGDtM3sxI7-E6txI#page-nav)
+> 雅虎 35 条军规是曾经在前端非常流行的性能优化指南 [Best Practices for Speeding Up Your Web Site](https://developer.yahoo.com/performance/rules.html?guccounter=2&guce_referrer=aHR0cHM6Ly9saW5rLmp1ZWppbi5jbi8&guce_referrer_sig=AQAAABIG-sK7LvhBJGoQpmXlQ3F0k7BGe8SQLSFdnXV2p44uMadU0caOs9JvFbSQW8o5wil1Jt2HmQIMMNxDB3rplIY_q93YXslaLCEKqfaPcCn9_8YwHHWhXDnzRRIRZ8XjVv5u3cyo4ChUPbJjZ6hfRoQWBonSyGDtM3sxI7-E6txI#page-nav)。
