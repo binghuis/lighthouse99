@@ -5,11 +5,16 @@
 
 本仓库内容是基于 [Chrome lighthouse 10 指南](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring?hl=zh-cn) 的实践。
 
-1. 性能优化是系统工程，不是零散的概念罗列。
-2. 性能问题的发现要基于足够的样本数据，而不是开发者的主观感受。
-3. 读懂性能评估依据的主要指标。
-4. 性能指标的上报。
-5. 性能问题分类以及各类问题的优化思路。
-6. 建立现代浏览器的“雅虎军规”。
+1. 重新认识前端性能优化
+2. 读懂 Lighthouse 10 的五个衡量指标
+3. 合理的收集 Lighthouse 指标。
+4. 性能问题分类以及各类问题的优化思路。
+   - 图片、字体等静态资源
+   - JS 执行
+5. 结果观察。
 
 > 雅虎 35 条军规是曾经在前端非常流行的性能优化指南 [Best Practices for Speeding Up Your Web Site](https://developer.yahoo.com/performance/rules.html?guccounter=2&guce_referrer=aHR0cHM6Ly9saW5rLmp1ZWppbi5jbi8&guce_referrer_sig=AQAAABIG-sK7LvhBJGoQpmXlQ3F0k7BGe8SQLSFdnXV2p44uMadU0caOs9JvFbSQW8o5wil1Jt2HmQIMMNxDB3rplIY_q93YXslaLCEKqfaPcCn9_8YwHHWhXDnzRRIRZ8XjVv5u3cyo4ChUPbJjZ6hfRoQWBonSyGDtM3sxI7-E6txI#page-nav)。
+
+1. 性能优化是系统工程，不是零散的概念罗列。
+2. 性能问题的发现要基于足够的样本数据，而不是开发者的主观感受。
+3. 建立现代浏览器的“雅虎军规”。
