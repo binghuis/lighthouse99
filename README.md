@@ -1,4 +1,4 @@
-# Lighthouse 10 满分手册
+# Lighthouse 满分手册
 
 ![googlechrome](https://img.shields.io/badge/Google_Chrome-4285F4?logo=googlechrome&labelColor=263238)
 ![lighthouse 10](https://img.shields.io/badge/Lighthouse_10-F44B21?logo=lighthouse&labelColor=263238)
