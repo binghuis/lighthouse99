@@ -1,7 +1,7 @@
 # Lighthouse 10 满分手册
 
 ![googlechrome](https://img.shields.io/badge/Google_Chrome-4285F4?logo=googlechrome&labelColor=263238)
-![lighthouse](https://img.shields.io/badge/Lighthouse-F44B21?logo=lighthouse&labelColor=263238)
+![lighthouse 10](https://img.shields.io/badge/Lighthouse_10-F44B21?logo=lighthouse&labelColor=263238)
 
 本仓库内容是基于 [Chrome lighthouse 10 指南](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring?hl=zh-cn) 的实践。
 
