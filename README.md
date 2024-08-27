@@ -3,18 +3,10 @@
 ![googlechrome](https://img.shields.io/badge/Google_Chrome-4285F4?logo=googlechrome&labelColor=263238)
 ![lighthouse 10](https://img.shields.io/badge/Lighthouse_10-F44B21?logo=lighthouse&labelColor=263238)
 
-本仓库内容是基于 [Chrome lighthouse 10 指南](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring?hl=zh-cn) 的实践。
+本仓库内容是基于 [Chrome lighthouse 10](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring?hl=zh-cn) 的实践。
 
-1. [重新认识前端性能优化](./docs/reassessing-fe-performance-ptimization.md)
-2. [读懂 Lighthouse 10 的五个衡量指标](./docs/understanding-lighthouse-10-five-key-metrics.md)
-3. [合理的收集 Lighthouse 指标](./docs/collecting-lighthouse-metrics-best-practices.md)
-4. [性能问题分类以及各类问题的优化思路](./docs/performance-issue-types-optimization-strategies.md)
-   - 图片、字体等静态资源
-   - JS 执行
-5. 结果观察。
-
-> 雅虎 35 条军规是曾经在前端非常流行的性能优化指南 [Best Practices for Speeding Up Your Web Site](https://developer.yahoo.com/performance/rules.html?guccounter=2&guce_referrer=aHR0cHM6Ly9saW5rLmp1ZWppbi5jbi8&guce_referrer_sig=AQAAABIG-sK7LvhBJGoQpmXlQ3F0k7BGe8SQLSFdnXV2p44uMadU0caOs9JvFbSQW8o5wil1Jt2HmQIMMNxDB3rplIY_q93YXslaLCEKqfaPcCn9_8YwHHWhXDnzRRIRZ8XjVv5u3cyo4ChUPbJjZ6hfRoQWBonSyGDtM3sxI7-E6txI#page-nav)。
-
-1. 性能优化是系统工程，不是零散的概念罗列。
-2. 性能问题的发现要基于足够的样本数据，而不是开发者的主观感受。
-3. 建立现代浏览器的“雅虎军规”。
+1. [性能优化是一项系统的工程，不是简单的套路](./docs/reassessing-fe-performance-ptimization.md)。
+2. [使用 Lighthouse 10 的五个指标评估网站性能](./docs/understanding-lighthouse-10-five-key-metrics.md)。
+3. [评估性能要基于足够的样本数据，而不是开发者的主观感受](./docs/collecting-lighthouse-metrics-best-practices.md)。
+4. [性能问题分类以及各类问题的优化思路](./docs/performance-issue-types-optimization-strategies.md)。
+5. [建立系统的优化体系，使网站性能长期保持稳定]()。
