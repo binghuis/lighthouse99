@@ -1,6 +1,6 @@
 {
   "name": "lighthouse99",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "lighthouse 满分手册。",
   "type": "module",
   "types": "./dist/index.d.ts",
