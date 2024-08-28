@@ -1,13 +1,13 @@
 {
   "name": "lighthouse99",
   "version": "0.0.2",
-  "description": "lighthouse 满分手册。",
+  "description": "lighthouse 性能指标上报工具。",
   "type": "module",
-  "types": "./dist/index.d.ts",
+  "types": "dist/index.d.ts",
+  "module": "dist/index.js",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "import": "./dist/index.js"
     }
   },
   "files": [
