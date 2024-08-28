@@ -1,4 +1,4 @@
-# 使用 Lighthouse 10 的五个指标评估网站性能
+# 了解 Lighthouse 10 的五个指标评估网站性能
 
 [Lighthouse](https://github.com/GoogleChrome/lighthouse) 是谷歌开源的自动化工具，它可以对网页进行全面的审查，并提供关于性能、无障碍功能、最佳做法和 SEO 的评分和建议。
 
@@ -69,5 +69,3 @@ LCP 是核心页面性能指标，因为它代表用户能看到页面最有价�
 ### Cumulative Layout Shift 累计布局偏移
 
 ### Speed Index 速度指数
-
-## [web-vitals](https://github.com/GoogleChrome/web-vitals)
