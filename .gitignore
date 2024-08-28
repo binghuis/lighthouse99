@@ -2,3 +2,4 @@ node_modules
 .vite-inspect
 dist
 /*.html
+cache
