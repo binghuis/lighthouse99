@@ -11,7 +11,7 @@ hero:
       link: /reassessing-fe-performance-ptimization
     - theme: alt
       text: 指标上报 SDK
-      link: /understanding-lighthouse-10-five-key-metrics
+      link: /getting-started
 # features:
 #   - title:
 #     details:

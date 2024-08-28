@@ -9,16 +9,17 @@ export default defineConfig({
 
     sidebar: [
       {
-        text: "指标上报",
+        text: "指标上报 SDK",
         items: [
           {
-            text: "开始",
-            link: "/reassessing-fe-performance-ptimization",
+            text: "开始使用",
+            link: "/getting-started",
           },
         ],
       },
       {
-        text: "性能优化指南",
+        text: "优化指南",
+        collapsed: true,
         items: [
           {
             text: "性能优化是一项系统的工程，不是简单的套路",
@@ -33,7 +34,7 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: "github", link: "https://github.com/vuejs/vitepress" },
+      { icon: "github", link: "https://github.com/binghuis/lighthouse99" },
     ],
   },
 });
