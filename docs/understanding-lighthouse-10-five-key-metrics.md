@@ -6,7 +6,7 @@
 
 > Lighthouse 不仅可以在 Chrome DevTools 中使用，还支持命令行工具或集成到 CI/CD 中。
 
-<img src='./assets/lighthouse.png' width='480px' />
+<img src='./assets/lighthouse.png' width='420px' />
 
 根据 Lighthouse 报告可以直观的看出，Google 首页的性能指标完美，最佳做法和 SEO 良好，而无障碍方面需要改进。
 
