@@ -1,4 +1,4 @@
-# 了解 Lighthouse 10 的五个性能指标
+# 深入 Lighthouse 10 的五大性能指标
 
 [Lighthouse](https://github.com/GoogleChrome/lighthouse) 是谷歌开源的自动化工具，它可以对网页进行全面的审查，并提供关于性能、无障碍功能、最佳做法和 SEO 的评分和建议。
 
@@ -26,9 +26,7 @@
 
 继续观察分析报告里面性能部分，可以看到有五个指标，它们才是重点。
 
-## Lighthouse 10 五大性能指标
-
-### [First Contentful Paint](https://web.dev/articles/fcp?hl=zh-cn) （FCP）首次内容绘制
+### ⓵ FCP 首次内容绘制 [First Contentful Paint](https://web.dev/articles/fcp?hl=zh-cn)
 
 FCP 衡量从用户首次导航到网页到网页任何内容在屏幕上呈现的时间。
 
@@ -46,7 +44,7 @@ FCP 衡量从用户首次导航到网页到网页任何内容在屏幕上呈现�
 | 需要改进 | 1.8 < 用时 ≤ 3 |
 | 差       |      > 3       |
 
-### [Largest Contentful Paint](https://web.dev/articles/lcp?hl=zh-cn) 最大内容绘制
+### ⓶ LCP 最大内容绘制 [Largest Contentful Paint](https://web.dev/articles/lcp?hl=zh-cn)
 
 LCP 衡量从用户首次导航到网页到网页最大内容在屏幕上呈现的时间。LCP 同样需要考虑上一个页面的卸载时间和页面网络请求时间。
 
@@ -64,7 +62,7 @@ LCP 是核心页面性能指标，因为它代表用户能看到页面最有价�
 | 需要改进 | 2.5 < 用时 ≤ 4 |
 | 差       |      > 4       |
 
-### Total Blocking Time 总阻塞时间
+### ⓷ 总阻塞时间 Total Blocking Time
 
 TBT 衡量的是网页的可交互性。
 
@@ -86,6 +84,6 @@ TTI 越短，代表用户能越早与页面进行交互。但是 TTI 有个很�
 
 因此在 Lighthouse 10 TTI 作为指标已被移除了。
 
-### Cumulative Layout Shift 累计布局偏移
+### ⓸ 累计布局偏移 Cumulative Layout Shift
 
-### Speed Index 速度指数
+### ⓹ 速度指数 Speed Index

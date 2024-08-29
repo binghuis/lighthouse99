@@ -1,4 +1,4 @@
-# 性能优化是一项系统的工程，不是简单的套路
+# 从系统工程的角度看待问题，而非简单套路
 
 前端社区曾经流行过一套非常有名的性能优化指南，叫 [雅虎 35 条军规](https://developer.yahoo.com/performance/rules.html?guccounter=2&guce_referrer=aHR0cHM6Ly9saW5rLmp1ZWppbi5jbi8&guce_referrer_sig=AQAAABIG-sK7LvhBJGoQpmXlQ3F0k7BGe8SQLSFdnXV2p44uMadU0caOs9JvFbSQW8o5wil1Jt2HmQIMMNxDB3rplIY_q93YXslaLCEKqfaPcCn9_8YwHHWhXDnzRRIRZ8XjVv5u3cyo4ChUPbJjZ6hfRoQWBonSyGDtM3sxI7-E6txI#page-nav)。这份指南列举了非常多的可以提升网站性能的技巧。
 

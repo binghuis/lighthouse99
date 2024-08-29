@@ -23,11 +23,11 @@ export default defineConfig({
         // collapsed: true,
         items: [
           {
-            text: "性能优化是一项系统的工程",
+            text: "从系统工程的角度看待问题，而非简单套路",
             link: "/reassessing-fe-performance-ptimization",
           },
           {
-            text: "了解 Lighthouse 的五个性能指标",
+            text: "深入 Lighthouse 的五大性能指标",
             link: "/understanding-lighthouse-10-five-key-metrics",
           },
         ],

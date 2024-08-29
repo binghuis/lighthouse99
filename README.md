@@ -5,10 +5,10 @@
 
 本仓库内容是基于 [Chrome lighthouse 10](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring?hl=zh-cn) 的实践。
 
-1. [性能优化是一项系统的工程，不是简单的套路](./docs/reassessing-fe-performance-ptimization.md)。
-2. [了解 Lighthouse 10 的五个性能指标](./docs/understanding-lighthouse-10-five-key-metrics.md)。
-3. 不同的采集方式适用于不同的性能指标。
-4. 使用 `web-vitals` 开发指标上报 SDK。
-5. [评估性能要基于足够的样本数据，而不是开发者的主观感受](./docs/collecting-lighthouse-metrics-best-practices.md)。
-6. [性能问题分类以及各类问题的优化思路](./docs/performance-issue-types-optimization-strategies.md)。
-7. [建立系统的优化体系，使网站性能长期保持稳定]()。
+1. [从系统工程的角度看待问题，而非简单套路](./docs/reassessing-fe-performance-ptimization.md)。
+2. [深入 Lighthouse 10 的五大性能指标](./docs/understanding-lighthouse-10-five-key-metrics.md)。
+3. 性能指标采集方法的选择：如何针对不同场景优化数据收集
+4. 使用 web-vitals 构建高效的性能指标上报 SDK
+5. [评估性能要基于数据，而非主观感受](./docs/collecting-lighthouse-metrics-best-practices.md)。
+6. [性能问题分类与对应优化策略](./docs/performance-issue-types-optimization-strategies.md)。
+7. [构建稳健的优化体系：持续保持网站卓越性能]()。
