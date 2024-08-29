@@ -1,18 +1,18 @@
 {
   "folders": [
     {
-      "path": "./",
+      "path": "../",
       "name": "root"
     },
     {
-      "path": "./docs"
+      "path": "../docs"
     },
     {
-      "path": "./samples/basic",
+      "path": "../samples/basic",
       "name": "site"
     },
     {
-      "path": "./packages/lh99",
+      "path": "../packages/lh99",
       "name": "package"
     }
   ],
