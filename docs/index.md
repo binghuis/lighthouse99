@@ -7,10 +7,10 @@ hero:
   tagline: 一站式性能优化与监控解决方案
   actions:
     - theme: brand
-      text: 阅读
+      text: 优化指南
       link: /reassessing-fe-performance-ptimization
     - theme: alt
-      text: 指标上报 SDK
+      text: 监控方案
       link: /guide
 features:
   - title: "全方位性能优化指南"

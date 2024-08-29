@@ -10,10 +10,10 @@ export default defineConfig({
     nav: [{ text: "🌰", link: "/" }],
     sidebar: [
       {
-        text: "指标上报 SDK",
+        text: "监控方案",
         items: [
           {
-            text: "开始使用",
+            text: "指标上报 SDK",
             link: "/guide",
           },
         ],
@@ -42,7 +42,7 @@ export default defineConfig({
     },
     footer: {
       message: "基于 MIT 许可发布",
-      copyright: `版权所有 © 2019-${new Date().getFullYear()} binghuis`,
+      copyright: `版权所有 © 2019-${new Date().getFullYear()} 宋秉徽`,
     },
     docFooter: {
       prev: "上一篇",
