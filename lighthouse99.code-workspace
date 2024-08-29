@@ -1,0 +1,22 @@
+{
+  "folders": [
+    {
+      "path": "./",
+      "name": "root"
+    },
+    {
+      "path": "./docs"
+    },
+    {
+      "path": "./samples/basic",
+      "name": "site"
+    },
+    {
+      "path": "./packages/lh99",
+      "name": "package"
+    }
+  ],
+  "settings": {
+    "liveServer.settings.port": 5501
+  }
+}
