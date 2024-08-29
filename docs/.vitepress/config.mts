@@ -20,14 +20,14 @@ export default defineConfig({
       },
       {
         text: "优化指南",
-        collapsed: true,
+        // collapsed: true,
         items: [
           {
-            text: "性能优化是一项系统的工程，不是简单的套路",
+            text: "性能优化是一项系统的工程",
             link: "/reassessing-fe-performance-ptimization",
           },
           {
-            text: "使用 Lighthouse 10 的五个指标评估网站性能",
+            text: "了解 Lighthouse 的五个性能指标",
             link: "/understanding-lighthouse-10-five-key-metrics",
           },
         ],

@@ -2,7 +2,7 @@
 
 ## 实地工具（Field tools）
 
-在用户真实设备上测量。
+真实用户的设备。
 
 ### [web-vitals](https://github.com/GoogleChrome/web-vitals)
 
