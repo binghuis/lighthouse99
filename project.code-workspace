@@ -5,9 +5,6 @@
       "name": "root"
     },
     {
-      "path": "./docs"
-    },
-    {
       "path": "./samples/basic",
       "name": "site"
     },

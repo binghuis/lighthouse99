@@ -4,6 +4,8 @@ import { onCLS, onFCP, onINP, onLCP, onTTFB, Metric } from "web-vitals";
 const queue = new Set();
 
 function addToQueue(metric: Metric) {
+  console.log(metric);
+
   queue.add(metric);
 }
 
