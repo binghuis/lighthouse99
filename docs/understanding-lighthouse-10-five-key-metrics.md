@@ -52,6 +52,8 @@ LCP 衡量从用户首次导航到网页到网页最大内容在屏幕上呈现�
 
 最大内容简单概括为可见的最大静态图片、文本块或带封面的视频。
 
+svg 不是 LCP 的候选元素。
+
 > 从 2023 年 8 月之后的 Chrome 116 开始，动态图（PNG、GIF）和无封面视频也被纳入 LCP 计算，LCP 时间取它们第一帧呈现时间。对于带封面的视频，LCP 时间戳则取封面和第一帧呈现时间的较早者。详情查看[官方说明](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md)。
 
 对于最大内容的定义实际上官方规则更加严格和详细，但是这些不是我们关注的重点，对于有些知识，浅尝辄止即可。
@@ -92,10 +94,43 @@ observer.observe({ type: "largest-contentful-paint", buffered: true });
 
 :::
 
+后面的前面的大才重新创建 PerformanceEntry 对象。
+
+#### 关于跨域资源的限制与处理
+
+PerformanceEntry 对象的 entryType 为 resource 表示这是一个资源类（XHR、svg、image、script）的指标。当存在资源跨域的情况时，只有资源返回头包含有效的 [Timing-Allow-Origin](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Timing-Allow-Origin) 来源字段，资源类型的指标时间戳才能正常计算，否则只会返回资源的 load time，其余时间戳都会被限制获取，这些被限制的时间戳会被设置为 0。当 Timing-Allow-Origin 设置了有效的源，资源类型的详细时间戳会使用高精度时间戳计算，高精度时间戳最高可到达 5 微秒级别的精度。响应头 Timing-Allow-Origin 用于指定特定站点，以允许其访问 Resource Timing API 提供的相关信息，否则这些信息会由于跨源限制将被报告为零。导致资源类型性能指标异常。
+
+::: details 点击查看 timing-allow-origin 对 LCP 指标的影响
+
+跨域图片没有配置 Timing-Allow-Origin 返回属性，因此只有部分属性允许被获取，除了这几个属性之外，其余都是 0。
+
+[startTime](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/startTime)
+[duration](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/duration)
+[responseEnd](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/responseEnd)
+[fetchStart](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/fetchStart)
+
+这些属性的官方定义非常复杂，有需要的话可以去对应官方定义查看，如果不是要做极致的性能优化，一定要把所有阶段拆解出来一一分析，并不推荐查看这些所有的定义。只要只要为了获取完整的 LCP 指标数据，一定要记得资源响应要返回正确的 Timing-Allow-Origin。
+
+详情请参考文档[Resource Timing API](https://developer.mozilla.org/zh-CN/docs/Web/API/Performance_API/Resource_timing)
+
+| 本地图片                                  | 跨域图片                                   |
+| ----------------------------------------- | ------------------------------------------ |
+| <img src='./assets/local-resource.png' /> | <img src='./assets/remote-resource.png' /> |
+
+:::
+
+通过如下代码可以获取到资源类型文件的 PerformanceEntry 对象。
+
+```js
+const observer = new PerformanceObserver((list) => {
+  console.log(list.getEntries());
+});
+observer.observe({ type: "resource", buffered: true });
+```
+
 LCP 代表用户能看到页面最有价值的内容需要等待多长时间。
 
 现代浏览器的首屏加载速度就是用 LCP 衡量的，因为此时用户已经可以看到页面的主要内容了。
-
 指标评价：
 
 | 评价   |   指标（秒）   |

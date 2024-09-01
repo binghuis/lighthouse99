@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { LH99 } from "lighthouse99";
-import { initPerfume } from "perfume.js";
-const lh99 = new LH99("appId");
-lh99.init();
-initPerfume();
+
 function App() {
   // const [count, setCount] = useState(0);
   const [mdShow, setMdShow] = useState(false);
@@ -18,7 +14,7 @@ function App() {
   }, []);
 
   return (
-    <div className="bg-slate-800 w-screen h-screen flex justify-center items-center gap-4">
+    <div className="flex justify-center items-center gap-4 h-full">
       {lgShow && (
         <div className="w-60 h-60 bg-pink-500 rounded-lg  text-8xl flex justify-center items-center">
           Large
