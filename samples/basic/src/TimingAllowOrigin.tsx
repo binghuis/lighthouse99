@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 function TimingAllowOrigin() {
   useEffect(() => {
-    const po = new PerformanceObserver((list) => {
+    const observer = new PerformanceObserver((list) => {
       console.log(list.getEntries());
     });
-    po.observe({ type: "resource", buffered: true });
+    observer.observe({ type: "resource", buffered: true });
   }, []);
 
   return (

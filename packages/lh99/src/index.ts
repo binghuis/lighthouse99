@@ -5,7 +5,6 @@ const queue = new Set();
 
 function addToQueue(metric: Metric) {
   console.log(metric);
-
   queue.add(metric);
 }
 
@@ -15,10 +14,16 @@ function flushQueue() {
     // Note: JSON.stringify will likely include more data than you need.
     const body = JSON.stringify([...queue]);
 
-    // if (navigator.sendBeacon) {
-    //   navigator.sendBeacon("/analytics", body);
-    // } else {
-    //   fetch("/analytics", { body, method: "POST", keepalive: true });
+    // try {
+    //   if (navigator.sendBeacon) {
+    //     navigator.sendBeacon("/analytics", body);
+    //   } else {
+    //     fetch("/analytics", { body, method: "POST", keepalive: true }).catch(
+    //       (error) => {}
+    //     );
+    //   }
+    // } catch (error) {
+    //   console.error("Failed to send analytics", error);
     // }
 
     queue.clear();
@@ -39,7 +44,7 @@ export class LH99 {
 
   init() {
     if (typeof window === "undefined") {
-      return;
+      console.warn("当前环境不支持 web-vitals");
     }
     onFCP(addToQueue);
     onLCP(addToQueue);
