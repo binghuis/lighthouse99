@@ -26,15 +26,17 @@
 
 观察报告里面的性能部分，可以看到有五个指标，它们才是接下来的重点。
 
+::: tip
+本手册基于 Lighthouse 10，过时的性能指标除非必要，不会提及。
+:::
+
 ## FCP 首次内容绘制
 
 [First Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint?hl=zh-cn) 衡量的是用户从进页面开始，到页面有任何内容渲染出来，一共用了多长时间。
 
 > 任何内容指的是文本、图片（包括背景图）、非白色 `canvas` 及 `svg` 元素。但排除 `iframe` 中任何内容。
 
-::: tip
 FCP 包括上一个页面的卸载时间（如果是页面间跳转的话），也就是说从浏览器地址栏按下回车或在页面中点击路由跳转的那一刻，计时就已经开始了。
-:::
 
 指标评价：
 
