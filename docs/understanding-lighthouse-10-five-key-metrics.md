@@ -26,7 +26,7 @@
 
 观察报告里面的性能部分，可以看到有五个指标，它们才是接下来的重点。
 
-### ⓵ FCP 首次内容绘制 [First Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint?hl=zh-cn)
+## FCP 首次内容绘制 [First Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint?hl=zh-cn)
 
 FCP 衡量的是用户从进页面开始，到页面有任何内容渲染出来，一共用了多长时间。
 
@@ -44,25 +44,33 @@ FCP 包括上一个页面的卸载时间（如果是页面间跳转的话），�
 | 橙色 | 1.8s < FCP ≤ 3s | 待改进 |
 | 红色 |      > 3s       | 差     |
 
-### ⓶ LCP 最大内容绘制 [Largest Contentful Paint](https://web.dev/articles/lcp?hl=zh-cn)
+## LCP 最大内容绘制 [Largest Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint?hl=zh-cn)
 
-LCP 衡量从用户首次导航到网页到网页最大内容在屏幕上呈现所用的时间。LCP 同样需要考虑上一个页面的卸载时间和页面网络请求时间。
+LCP 衡量的是用户从进页面开始，到页面最大内容渲染出来，一共用了多长时间。LCP 同样需要考虑上一个页面的卸载时间。
 
-与 FCP 不同的是，LCP 衡量的是网页主要内容加载完成所用的时间，而不是第一个可视元素加载完成所用的时间。
+与 FCP 不同，LCP 衡量的是网页主要内容加载完成所用的时间，而不是第一个可视元素加载完成所用的时间。
 
-最大内容简单概括为可见的最大静态图片、文本块或带封面的视频。
+### 最大内容的定义
 
-svg 不是 LCP 的候选元素。
+最大内容简单概括为可见的最大图片、文本块或视频。
 
-> 从 2023 年 8 月之后的 Chrome 116 开始，动态图（PNG、GIF）和无封面视频也被纳入 LCP 计算，LCP 时间取它们第一帧呈现时间。对于带封面的视频，LCP 时间戳则取封面和第一帧呈现时间的较早者。详情查看[官方说明](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md)。
+注意，一个元素被视为最大内容的前提是这个元素包含有效内容。如果一个元素不包含有效信息，那么这个元素不满足 LCP 的候选条件。
 
-对于最大内容的定义实际上官方规则更加严格和详细，但是这些不是我们关注的重点，对于有些知识，浅尝辄止即可。
+比如，占位图或其他低熵图片都不符合 LCP 候选条件，以为它们的图片信息密度太低。覆盖整个视口的元素会被视为背景而不是内容，也不满足候选条件。
 
-覆盖整个视口的元素会被视为背景而不是内容，占位符图片或其他具有低熵的图片也不会被视为内容，它们不符合 LCP 候选条件但却符合 FCP 的候选条件。
+低熵元素不满足 LCP 候选条件，但是满足 FCP 的，因为 FCP 统计的是任何可见元素，不管它是否包含有效内容。
 
-**低熵的图片**通常指的是信息熵较低的图像。信息熵是一个衡量图像信息量和复杂度的概念。颜色单一或相似，没有复杂的纹理或图案的图片一般为低熵图片。
+::: tip
+**低熵图片**通常指的是信息熵较低的图像。信息熵是一个衡量图像信息量和复杂度的概念。颜色单一或相似，没有复杂的纹理或图案的图片一般为低熵图片。
 
-#### LCP 的上报时机
+:::
+
+> 从 2023 年 8 月之后的 Chrome 116 开始，动态图（PNG、GIF）和无封面视频也被纳入 LCP 计算，LCP 时间戳取它们第一帧呈现时间。
+> 而带封面的视频，LCP 时间戳则取封面和第一帧呈现时间的较早者。详情查看 [官方说明](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md)。
+
+对于最大内容的定义，实际上，官方规则更加严格和详细，但是这些不是我们关注的重点，对于有些知识，浅尝辄止即可。
+
+### LCP 的上报时机
 
 当页面渲染过程中，元素不断的呈现给用户，因此再次其间，最大内容其实很可能一直是变化的，页面渲染第一帧确定的最大内容会被后续渲染的元素不断替代，每当最大内容变化的时候就会有一个新的 PerformanceEntry 对象被创建，[PerformanceEntry](https://developer.mozilla.org/zh-CN/docs/Web/API/PerformanceEntry) 是描述单个指标性能的对象。
 
@@ -96,7 +104,7 @@ observer.observe({ type: "largest-contentful-paint", buffered: true });
 
 后面的前面的大才重新创建 PerformanceEntry 对象。
 
-#### 关于跨域资源的限制与处理
+### 关于跨域资源的限制与处理
 
 PerformanceEntry 对象的 entryType 为 resource 表示这是一个资源类（XHR、svg、image、script）的指标。当存在资源跨域的情况时，只有资源返回头包含有效的 [Timing-Allow-Origin](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Timing-Allow-Origin) 来源字段，资源类型的指标时间戳才能正常计算，否则只会返回资源的 load time，其余时间戳都会被限制获取，这些被限制的时间戳会被设置为 0。当 Timing-Allow-Origin 设置了有效的源，资源类型的详细时间戳会使用高精度时间戳计算，高精度时间戳最高可到达 5 微秒级别的精度。响应头 Timing-Allow-Origin 用于指定特定站点，以允许其访问 Resource Timing API 提供的相关信息，否则这些信息会由于跨源限制将被报告为零。导致资源类型性能指标异常。
 
@@ -139,7 +147,7 @@ LCP 代表用户能看到页面最有价值的内容需要等待多长时间。
 | 待改进 | 2.5 < 用时 ≤ 4 |
 | 差     |      > 4       |
 
-### ⓷ 总阻塞时间 Total Blocking Time
+## 总阻塞时间 Total Blocking Time
 
 TBT 衡量的是网页的可交互性。
 
@@ -175,7 +183,7 @@ B 中有一个非常长的长任务，在此期间网页的渲染被阻塞，用
 | 待改进 | 200 < 用时 ≤ 600 |
 | 差     |      > 600       |
 
-### ⓸ 累计布局偏移 Cumulative Layout Shift
+## 累计布局偏移 Cumulative Layout Shift
 
 CLS 用于衡量视觉稳定性，表示用户遇到意外布局偏移的频率。
 
@@ -191,7 +199,7 @@ CLS 衡量的是页面整个生命周期内发生的所有单个布局偏移得�
 | 待改进 | 0.1 < 用时 ≤ 0.25 |
 | 差     |      > 0.25       |
 
-### ⓹ 速度指数 Speed Index
+## 速度指数 Speed Index
 
 | 评价   |    指标（秒）    |
 | ------ | :--------------: |
@@ -201,4 +209,4 @@ CLS 衡量的是页面整个生命周期内发生的所有单个布局偏移得�
 
 [网络状况报告](https://httparchive.org/)
 
-### 自定义指标
+## 自定义指标
