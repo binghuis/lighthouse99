@@ -26,9 +26,9 @@
 
 观察报告里面的性能部分，可以看到有五个指标，它们才是接下来的重点。
 
-## FCP 首次内容绘制 [First Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint?hl=zh-cn)
+## FCP 首次内容绘制
 
-FCP 衡量的是用户从进页面开始，到页面有任何内容渲染出来，一共用了多长时间。
+[First Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/first-contentful-paint?hl=zh-cn) 衡量的是用户从进页面开始，到页面有任何内容渲染出来，一共用了多长时间。
 
 > 任何内容指的是文本、图片（包括背景图）、非白色 `canvas` 及 `svg` 元素。但排除 `iframe` 中任何内容。
 
@@ -44,24 +44,25 @@ FCP 包括上一个页面的卸载时间（如果是页面间跳转的话），�
 | 橙色 | 1.8s < FCP ≤ 3s | 待改进 |
 | 红色 |      > 3s       | 差     |
 
-## LCP 最大内容绘制 [Largest Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint?hl=zh-cn)
+## LCP 最大内容绘制
 
-LCP 衡量的是用户从进页面开始，到页面最大内容渲染出来，一共用了多长时间。LCP 同样需要考虑上一个页面的卸载时间。
+[Largest Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint?hl=zh-cn) 衡量的是用户从进页面开始，到页面最大内容渲染出来，一共用了多长时间。**LCP 也是从浏览器地址栏按下回车或在页面中点击路由跳转的那一刻开始计时。**
 
 与 FCP 不同，LCP 衡量的是网页主要内容加载完成所用的时间，而不是第一个可视元素加载完成所用的时间。
 
 ### 最大内容的定义
 
-最大内容简单概括为可见的最大图片、文本块或视频。
+最大内容可以理解为页面中可见的最大图片、文本块或视频。
 
-注意，一个元素被视为最大内容的前提是这个元素包含有效内容。如果一个元素不包含有效信息，那么这个元素不满足 LCP 的候选条件。
+需要注意的是，只有包含有价值内容的元素才会被视为 LCP 的候选对象，否则不满足 LCP 的统计条件。
 
-比如，占位图或其他低熵图片都不符合 LCP 候选条件，以为它们的图片信息密度太低。覆盖整个视口的元素会被视为背景而不是内容，也不满足候选条件。
-
-低熵元素不满足 LCP 候选条件，但是满足 FCP 的，因为 FCP 统计的是任何可见元素，不管它是否包含有效内容。
+例如，占位图等低熵图片通常包含大量相同或相似的像素区域，它们颜色单一，缺乏细节，由于没有实际的内容价值，LCP 不会将它们计入统计。
+还有覆盖整个视口的元素通常被认为是大面积背景，同样不计入 LCP。
 
 ::: tip
-**低熵图片**通常指的是信息熵较低的图像。信息熵是一个衡量图像信息量和复杂度的概念。颜色单一或相似，没有复杂的纹理或图案的图片一般为低熵图片。
+低熵元素指的是信息熵较低的元素。信息熵是一个衡量信息量和复杂度的概念。
+
+低熵元素不满足 LCP（最大内容绘制）的候选条件，但满足 FCP（首次内容绘制）的条件，因为 FCP 统计的是任何可见元素，不管它是否包含有效内容。
 
 :::
 
