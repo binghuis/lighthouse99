@@ -12,3 +12,4 @@
 5. [评估性能要基于数据，而非主观感受](./docs/collecting-lighthouse-metrics-best-practices.md)。
 6. [性能问题分类与对应优化策略](./docs/performance-issue-types-optimization-strategies.md)。
 7. [构建稳健的优化体系：持续保持网站卓越性能]()。
+8. 性能优化快速入门指南
