@@ -48,13 +48,16 @@ FCP 包括上一个页面的卸载时间（如果是页面间跳转的话），�
 
 ## LCP 最大内容绘制
 
-[Largest Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint?hl=zh-cn) 衡量的是用户从进页面开始，到页面最大内容渲染出来，一共用了多长时间。**LCP 也是从浏览器地址栏按下回车或在页面中点击路由跳转的那一刻开始计时。**
+[Largest Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint?hl=zh-cn) 衡量的是用户从进页面开始，到页面最大内容渲染出来，一共用了多长时间。
 
-与 FCP 不同，LCP 衡量的是网页主要内容加载完成所用的时间，而不是第一个可视元素加载完成所用的时间。
+**LCP 也是从浏览器地址栏按下回车或在页面中点击路由跳转的那一刻开始计时。**
 
-### 最大内容的定义
+与 FCP 不同，LCP 衡量的是网页最大内容加载完成所用的时间，而不是第一个可视元素加载完成所用的时间。
 
-最大内容可以理解为页面中可见的最大图片、文本块或视频。
+最大内容可以理解为页面中最大的图片、文本块或视频。
+
+> 从 2023 年 8 月之后的 Chrome 116 开始，动态图（PNG、GIF）和无封面视频也被纳入 LCP 计算，LCP 时间戳取它们第一帧呈现时间。
+> 而带封面的视频，LCP 时间戳则取封面和第一帧呈现时间的较早者。详情查看 [官方说明](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md)。
 
 需要注意的是，只有包含有价值内容的元素才会被视为 LCP 的候选对象，否则不满足 LCP 的统计条件。
 
@@ -67,9 +70,6 @@ FCP 包括上一个页面的卸载时间（如果是页面间跳转的话），�
 低熵元素不满足 LCP（最大内容绘制）的候选条件，但满足 FCP（首次内容绘制）的条件，因为 FCP 统计的是任何可见元素，不管它是否包含有效内容。
 
 :::
-
-> 从 2023 年 8 月之后的 Chrome 116 开始，动态图（PNG、GIF）和无封面视频也被纳入 LCP 计算，LCP 时间戳取它们第一帧呈现时间。
-> 而带封面的视频，LCP 时间戳则取封面和第一帧呈现时间的较早者。详情查看 [官方说明](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md)。
 
 对于最大内容的定义，实际上，官方规则更加严格和详细，但是这些不是我们关注的重点，对于有些知识，浅尝辄止即可。
 
