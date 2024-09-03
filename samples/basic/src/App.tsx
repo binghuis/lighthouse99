@@ -15,6 +15,8 @@ function App() {
 
   return (
     <div className="flex justify-center items-center gap-4 h-full">
+      {/* 不包含文本的纯色元素不符合 LCP 的统计标准 */}
+      <div className="w-80 h-80 bg-amber-300 rounded-lg  text-8xl flex justify-center items-center"></div>
       {lgShow && (
         <div className="w-60 h-60 bg-pink-500 rounded-lg  text-8xl flex justify-center items-center">
           Large
