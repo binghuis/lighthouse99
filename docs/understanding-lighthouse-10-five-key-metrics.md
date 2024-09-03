@@ -104,22 +104,25 @@ observer.observe({ type: "largest-contentful-paint", buffered: true });
 
 ### 如何处理跨域资源
 
-资源类的
+浏览器使用资源计时 API [PerformanceResourceTiming](https://developer.mozilla.org/zh-CN/docs/Web/API/Performance_API/Resource_timing) 来统计 `entryType` 为 `resource` 类型的 `PerformanceEntry` 资源类型指标。
 
-PerformanceEntry 对象的 entryType 为 resource 表示这是一个资源类（XHR、svg、image、script）的指标。当存在资源跨域的情况时，只有资源返回头包含有效的 [Timing-Allow-Origin](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Timing-Allow-Origin) 来源字段，资源类型的指标时间戳才能正常计算，否则只会返回资源的 load time，其余时间戳都会被限制获取，这些被限制的时间戳会被设置为 0。当 Timing-Allow-Origin 设置了有效的源，资源类型的详细时间戳会使用高精度时间戳计算，高精度时间戳最高可到达 5 微秒级别的精度。响应头 Timing-Allow-Origin 用于指定特定站点，以允许其访问 Resource Timing API 提供的相关信息，否则这些信息会由于跨源限制将被报告为零。导致资源类型性能指标异常。
+当 `PerformanceEntry` 对象的 时，表示这是一个资源类（如 XHR、SVG、图片、脚本）的指标。在资源跨域的情况下，只有当资源的响应头包含有效的 `Timing-Allow-Origin` 字段时，资源类型的时间戳才会正常计算。否则很多时间戳将被限制访问，并被设置为 0。
+
+当 Timing-Allow-Origin 设置了有效的源时，资源类型的详细时间戳会以高精度时间戳进行计算，精度可达 5 微秒。Timing-Allow-Origin 响应头用于指定允许访问 Resource Timing API 提供信息的站点，否则这些信息将因跨源限制被报告为零，进而导致资源性能指标异常。
 
 ::: details 点击查看 timing-allow-origin 对 LCP 指标的影响
 
 跨域图片没有配置 Timing-Allow-Origin 返回属性，因此只有部分属性允许被获取，除了这几个属性之外，其余都是 0。
 
 [startTime](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/startTime)
+
 [duration](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/duration)
+
 [responseEnd](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/responseEnd)
+
 [fetchStart](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/fetchStart)
 
 这些属性的官方定义非常复杂，有需要的话可以去对应官方定义查看，如果不是要做极致的性能优化，一定要把所有阶段拆解出来一一分析，并不推荐查看这些所有的定义。只要只要为了获取完整的 LCP 指标数据，一定要记得资源响应要返回正确的 Timing-Allow-Origin。
-
-详情请参考文档[Resource Timing API](https://developer.mozilla.org/zh-CN/docs/Web/API/Performance_API/Resource_timing)
 
 | 本地图片                                  | 跨域图片                                   |
 | ----------------------------------------- | ------------------------------------------ |
@@ -127,7 +130,7 @@ PerformanceEntry 对象的 entryType 为 resource 表示这是一个资源类（
 
 :::
 
-通过如下代码可以获取到资源类型文件的 PerformanceEntry 对象。
+通过如下代码可以获取到资源类型的 `PerformanceEntry` 对象。
 
 ```js
 const observer = new PerformanceObserver((list) => {
@@ -136,9 +139,8 @@ const observer = new PerformanceObserver((list) => {
 observer.observe({ type: "resource", buffered: true });
 ```
 
-LCP 代表用户能看到页面最有价值的内容需要等待多长时间。
+LCP 代表用户能看到页面最有价值的内容需要等待多长时间。现代浏览器的首屏加载速度就是用 LCP 衡量的，因为此时用户已经可以看到页面的主要内容了。
 
-现代浏览器的首屏加载速度就是用 LCP 衡量的，因为此时用户已经可以看到页面的主要内容了。
 指标评价：
 
 | 评价   |   指标（秒）   |
