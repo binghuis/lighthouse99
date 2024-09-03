@@ -79,9 +79,9 @@ FCP 包括上一个页面的卸载时间（如果是页面间跳转的话），�
 
 > 即使从视口或 DOM 中移除最大的内容元素，只要没有呈现更大的元素，它仍然被视为最大的内容元素。这种机制在图片轮播等场景中尤为适用。
 
-`largest-contentful-paint` 条目是一个 [PerformanceEntry](https://developer.mozilla.org/zh-CN/docs/Web/API/PerformanceEntry) 对象，用于描述性能指标。
+`largest-contentful-paint` 条目是一个 [PerformanceEntry](https://developer.mozilla.org/zh-CN/docs/Web/API/PerformanceEntry) 对象，即一条指标数据。
 
-这段代码可以打印出 `PerformanceEntry` 对象。
+这段代码可以打印出 LCP 指标数据。
 
 ```js
 const observer = new PerformanceObserver((list) => {
@@ -91,9 +91,9 @@ const observer = new PerformanceObserver((list) => {
 observer.observe({ type: "largest-contentful-paint", buffered: true });
 ```
 
-::: details 点击观察 LCP 条目的创建。
+::: details 点击观察多个 LCP 条目的创建。
 
-三个色块按照从小到大的顺序依次渲染，在这个过程中页面最大内容不断变化，因此创建了不止一个 `PerformanceEntry` 对象。
+三个色块按照从小到大的顺序依次渲染，在这个过程中页面最大内容不断变化，因此创建了不止一个 LCP 条目。
 
 [点击查看色块页面源代码](https://gist.github.com/binghuis/0142b10a82ff4f199ee4dc8eec9fd186)。
 
@@ -104,25 +104,16 @@ observer.observe({ type: "largest-contentful-paint", buffered: true });
 
 ### 如何处理跨域资源
 
-浏览器使用资源计时 API [PerformanceResourceTiming](https://developer.mozilla.org/zh-CN/docs/Web/API/Performance_API/Resource_timing) 来统计 `entryType` 为 `resource` 类型的 `PerformanceEntry` 资源类型指标。
+浏览器使用资源计时 API [PerformanceResourceTiming](https://developer.mozilla.org/zh-CN/docs/Web/API/Performance_API/Resource_timing) 来统计 `entryType` 为 `resource` 类型的 `PerformanceEntry` 指标条目。
 
-当 `PerformanceEntry` 对象的 时，表示这是一个资源类（如 XHR、SVG、图片、脚本）的指标。在资源跨域的情况下，只有当资源的响应头包含有效的 `Timing-Allow-Origin` 字段时，资源类型的时间戳才会正常计算。否则很多时间戳将被限制访问，并被设置为 0。
+在资源跨域的情况下，只有当资源的响应头 `Timing-Allow-Origin` 设置了有效的源时，资源类型（如 XHR、SVG、图片、脚本）的指标数据时间戳才会正常计算。否则很多时间戳将因跨源限制被报告为零。
 
-当 Timing-Allow-Origin 设置了有效的源时，资源类型的详细时间戳会以高精度时间戳进行计算，精度可达 5 微秒。Timing-Allow-Origin 响应头用于指定允许访问 Resource Timing API 提供信息的站点，否则这些信息将因跨源限制被报告为零，进而导致资源性能指标异常。
+**资源请求一定要设置有效的 `Timing-Allow-Origin`。**
 
-::: details 点击查看 timing-allow-origin 对 LCP 指标的影响
+::: details 点击查看 `Timing-Allow-Origin` 对 LCP 指标时间戳的影响。
 
-跨域图片没有配置 Timing-Allow-Origin 返回属性，因此只有部分属性允许被获取，除了这几个属性之外，其余都是 0。
-
-[startTime](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/startTime)
-
-[duration](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/duration)
-
-[responseEnd](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/responseEnd)
-
-[fetchStart](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/fetchStart)
-
-这些属性的官方定义非常复杂，有需要的话可以去对应官方定义查看，如果不是要做极致的性能优化，一定要把所有阶段拆解出来一一分析，并不推荐查看这些所有的定义。只要只要为了获取完整的 LCP 指标数据，一定要记得资源响应要返回正确的 Timing-Allow-Origin。
+跨域图片没有配置 `Timing-Allow-Origin`，指标时间戳被限制获取，除了 [startTime](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/startTime)、
+[duration](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/duration)、[responseEnd](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/responseEnd)、[fetchStart](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/fetchStart) 之外，其余都是 0。
 
 | 本地图片                                  | 跨域图片                                   |
 | ----------------------------------------- | ------------------------------------------ |
@@ -130,7 +121,7 @@ observer.observe({ type: "largest-contentful-paint", buffered: true });
 
 :::
 
-通过如下代码可以获取到资源类型的 `PerformanceEntry` 对象。
+通过如下代码可以获取到资源类型的指标数据。
 
 ```js
 const observer = new PerformanceObserver((list) => {
@@ -143,11 +134,11 @@ LCP 代表用户能看到页面最有价值的内容需要等待多长时间。�
 
 指标评价：
 
-| 评价   |   指标（秒）   |
-| ------ | :------------: |
-| 好     |     ≤ 2.5      |
-| 待改进 | 2.5 < 用时 ≤ 4 |
-| 差     |      > 4       |
+| 颜色 |   指标（秒）    | 评价   |
+| ---- | :-------------: | ------ |
+| 绿色 |     ≤ 2.5s      | 好     |
+| 橙色 | 2.5s < LCP ≤ 4s | 待改进 |
+| 红色 |      > 4s       | 差     |
 
 ## 总阻塞时间 Total Blocking Time
 
