@@ -24,11 +24,11 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <div className="bg-slate-800 w-screen h-screen flex flex-col text-white">
-    {/* <div className="flex justify-center items-center gap-4">
+    <div className="flex justify-center items-center gap-4">
       <a href="/">LCP</a>
       <a href="/timing-allow-origin">TimingAllowOrigin</a>
       <a href="/fcp">FCP</a>
-    </div> */}
+    </div>
     <div className="flex-1">
       <RouterProvider router={router} />
     </div>

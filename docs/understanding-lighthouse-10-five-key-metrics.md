@@ -46,42 +46,42 @@ FCP 包括上一个页面的卸载时间（如果是页面间跳转的话），�
 
 ## LCP 最大内容绘制
 
-[Largest Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint?hl=zh-cn) 衡量的是用户从进页面开始，到页面最大内容渲染出来，一共用了多长时间。
+[Largest Contentful Paint](https://developer.chrome.com/docs/lighthouse/performance/lighthouse-largest-contentful-paint?hl=zh-cn) 衡量的是用户从进页面开始，到页面最显著的内容渲染出来，一共用了多长时间。
 
-**LCP 也是从浏览器地址栏按下回车或在页面中点击路由跳转的那一刻开始计时。**
+**同 FCP 一样，LCP 也是从浏览器地址栏按下回车或在页面中点击路由跳转的那一刻开始计时。**
 
-与 FCP 不同，LCP 衡量的是网页最大内容加载完成所用的时间，而不是第一个可视元素加载完成所用的时间。
+最大内容指的是页面中最显著的可见的元素，如图片、文本块或视频，其必须包含有价值的信息，以确保对用户具有实际意义。
 
-最大内容可以理解为页面中最大的图片、文本块或视频。
+举个例子，占位图等低熵图片通常包含大量相同或相似的像素区域，颜色单一且缺乏细节，无法提供有价值信息，因而不会被计入 LCP 统计。
 
 > 从 2023 年 8 月之后的 Chrome 116 开始，动态图（PNG、GIF）和无封面视频也被纳入 LCP 计算，LCP 时间戳取它们第一帧呈现时间。
-> 而带封面的视频，LCP 时间戳则取封面和第一帧呈现时间的较早者。详情查看 [官方说明](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md)。
-
-需要注意的是，只有包含有价值内容的元素才会被视为 LCP 的候选对象，否则不满足 LCP 的统计条件。
-
-例如，占位图等低熵图片通常包含大量相同或相似的像素区域，它们颜色单一，缺乏细节，由于没有实际的内容价值，LCP 不会将它们计入统计。
-还有覆盖整个视口的元素通常被认为是大面积背景，同样不计入 LCP。
+> 而带封面的视频，LCP 时间戳则取封面和第一帧呈现时间的较早达到者。详情查看 [官方说明](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md)。
 
 ::: tip
-低熵元素指的是信息熵较低的元素。信息熵是一个衡量信息量和复杂度的概念。
+低熵图片指的是那些在视觉上包含信息量较少的图像。
 
-低熵元素不满足 LCP（最大内容绘制）的候选条件，但满足 FCP（首次内容绘制）的条件，因为 FCP 统计的是任何可见元素，不管它是否包含有效内容。
-
+低熵图片不满足 LCP 的候选条件，但满足 FCP 的条件，因为 FCP 统计的是任何可见元素，不管它是否包含有效内容。
 :::
 
-对于最大内容的定义，实际上，官方规则更加严格和详细，但是这些不是我们关注的重点，对于有些知识，浅尝辄止即可。
+对于最大内容的定义，官方规则还要更加严格和详细，但这不是我们关注的重点，对于有些知识，浅尝辄止即可。
 
-### LCP 的上报时机
+### 最大内容的尺寸
 
-当页面渲染过程中，元素不断的呈现给用户，因此再次其间，最大内容其实很可能一直是变化的，页面渲染第一帧确定的最大内容会被后续渲染的元素不断替代，每当最大内容变化的时候就会有一个新的 PerformanceEntry 对象被创建，[PerformanceEntry](https://developer.mozilla.org/zh-CN/docs/Web/API/PerformanceEntry) 是描述单个指标性能的对象。
+### LCP 条目的创建时机
 
-当用户开始与页面进行交互（键盘、鼠标事件），LCP 会立即停止监听，不会再生成新 PerformanceEntry 对象。
+在页面渲染过程中，新的元素不断呈现给用户，这会导致最大内容可能会不断变化，初始渲染时确定的最大内容不断被后续渲染的新内容所替代。
 
-如果实在后台标签打开的页面，在用户聚焦新开标签页之前，LCP 条目都不会创建，如果用户聚焦新页面时页面已经完成了加载，那么整个 LCP 都不会被监听。
+每次确定最大内容，浏览器都会分派一个 `largest-contentful-paint` 条目。
 
-> 如果从视口甚至 DOM 中移除最大的内容元素，除非呈现更大的元素，否则它仍然是最大的内容元素。
+只要用户开始与页面进行交互（当鼠标、键盘事件发生），LCP 监测会立即停止，不再分派新的 LCP 条目。
 
-这段代码可以打印出 LCP 的 PerformanceEntry 对象。
+如果页面在后台标签中打开，只有在用户切换到该标签页时，才会创建 LCP 条目。如果在用户切换时页面已完成加载，则整个 LCP 过程都不会被监测。
+
+> 即使从视口或 DOM 中移除最大的内容元素，只要没有呈现更大的元素，它仍然被视为最大的内容元素。这种机制在图片轮播等场景中尤为适用。
+
+`largest-contentful-paint` 条目是一个 [PerformanceEntry](https://developer.mozilla.org/zh-CN/docs/Web/API/PerformanceEntry) 对象，用于描述性能指标。
+
+这段代码可以打印出 `PerformanceEntry` 对象。
 
 ```js
 const observer = new PerformanceObserver((list) => {
@@ -91,21 +91,20 @@ const observer = new PerformanceObserver((list) => {
 observer.observe({ type: "largest-contentful-paint", buffered: true });
 ```
 
-::: details 点击查看打印 PerformanceEntry 结果
+::: details 点击观察 LCP 条目的创建。
 
-三个色块按照从小到大的顺序依次渲染，在这个过程中页面最大内容不断变化，因此创建了不止一个 PerformanceEntry 对象。
+三个色块按照从小到大的顺序依次渲染，在这个过程中页面最大内容不断变化，因此创建了不止一个 `PerformanceEntry` 对象。
 
 [点击查看色块页面源代码](https://gist.github.com/binghuis/0142b10a82ff4f199ee4dc8eec9fd186)。
 
 <img src='./assets/lcp-block.png'>
 <img src='./assets/md-performanceentry.png'>
 <img src='./assets/lg-performanceentry.png'>
-
 :::
 
-后面的前面的大才重新创建 PerformanceEntry 对象。
+### 如何处理跨域资源
 
-### 关于跨域资源的限制与处理
+资源类的
 
 PerformanceEntry 对象的 entryType 为 resource 表示这是一个资源类（XHR、svg、image、script）的指标。当存在资源跨域的情况时，只有资源返回头包含有效的 [Timing-Allow-Origin](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Timing-Allow-Origin) 来源字段，资源类型的指标时间戳才能正常计算，否则只会返回资源的 load time，其余时间戳都会被限制获取，这些被限制的时间戳会被设置为 0。当 Timing-Allow-Origin 设置了有效的源，资源类型的详细时间戳会使用高精度时间戳计算，高精度时间戳最高可到达 5 微秒级别的精度。响应头 Timing-Allow-Origin 用于指定特定站点，以允许其访问 Resource Timing API 提供的相关信息，否则这些信息会由于跨源限制将被报告为零。导致资源类型性能指标异常。
 
