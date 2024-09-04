@@ -1,4 +1,5 @@
 import { defineConfig } from "vitepress";
+import { SIDEBAR } from "./sidebar";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -8,31 +9,7 @@ export default defineConfig({
   description: "Lighthouse 性能优化满分手册",
   themeConfig: {
     nav: [{ text: "🌰", link: "/" }],
-    sidebar: [
-      {
-        text: "监控方案",
-        items: [
-          {
-            text: "指标上报 SDK",
-            link: "/guide",
-          },
-        ],
-      },
-      {
-        text: "优化指南",
-        // collapsed: true,
-        items: [
-          {
-            text: "从系统工程的角度看待问题，而非简单套路",
-            link: "/reassessing-fe-performance-ptimization",
-          },
-          {
-            text: "深入 Lighthouse 的五大性能指标",
-            link: "/understanding-lighthouse-10-five-key-metrics",
-          },
-        ],
-      },
-    ],
+    sidebar: SIDEBAR,
     socialLinks: [
       { icon: "github", link: "https://github.com/binghuis/lighthouse99" },
     ],
