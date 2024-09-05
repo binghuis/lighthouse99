@@ -1,22 +1,27 @@
 # 深入了解 Google 网页指标计划
 
-Web Vitals 是 Google 创建的一项计划，旨在提供统一的指标来衡量用户页面体验。
+下面是网页从开始导航到加载完成的过程示意图。图中所有的时间戳都是通过性能导航 API [PerformanceNavigationTiming](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming) 获取的，下图时间戳很多一看就知道是什么意思，也就不多说了，接下来只会提及几个和性能指标定义相关的时间戳。
+
+![页面加载过程](./assets/performance-navigation-timing-timestamp-diagram.svg)
+
+**`startTime`：** 当页面导航开始时的时间戳。在浏览器中输入网址并按下回车，或在页面内点击链接触发跳转，都会启动页面导航。
+
+**`responsestart`：** 页面请求开始返回时的时间戳，此时页面开始响应。
+
+**`firstInterimResponsestart`：** 图中状态码 `103` 代表 `Early Hints` 「提前提示」，服务器在正式通过状态码 `200` 返回页面 HTML 之前，通过 `103` 可以提前告诉浏览器需要哪些资源，浏览器收到 `103` 响应之后可以提前下载这些资源。`firstInterimResponsestart` 记录的是页面请求「提前提示」响应开始时的时间戳。
+
+> - [出于兼容性和安全原因，建议仅通过 HTTP/2 或更高版本发送 HTTP 103 Early Hints 响应](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103#browser_compatibility)。
+> - [社区关于 103 状态码浏览器支持现状的测试](https://github.com/mdn/browser-compat-data/pull/24001)。
 
 ## TTFB 首字节到达时间
 
-[首字节到达时间（Time to First Byte）](https://web.dev/articles/ttfb?hl=zh-cn) 衡量的是从导航请求开始到 HTML 开始响应所用的时间。
+[首字节到达时间（Time to First Byte）](https://web.dev/articles/ttfb?hl=zh-cn) 衡量的是从页面导航开始到页面响应开始（浏览器接收到第一个字节）所用的时间。
 
-导航请求即 HTML 请求，在浏览器地址栏按下回车或在页面中点击路由跳转都会触发导航请求。
-
-导航请求和导航不一样，导航请求是开始请求页面数据，而导航则包括请求发送之前的一些任务，比如路由间跳转的页面在导航请求发出之前还要卸载上一个页面。
-
-下图中时间戳 `startTime` 到 `responseStart` 即为 TTFB。
-
-![网络请求阶段及其相关时间的示意图](./assets/performance-navigation-timing-timestamp-diagram.svg)
+当页面请求支持 103 「提前提示」 响应，TTFB 是 `startTime` 到 `firstInterimResponsestart`，否则 TTFB 是 `startTime` 到 `responsestart`。
 
 ## FCP 首次内容绘制
 
-[首次内容绘制（First Contentful Paint）](https://web.dev/articles/fcp?hl=zh-cn) 衡量的是用户从开始导航到页面有任何内容渲染出来所用的时间。
+[首次内容绘制（First Contentful Paint）](https://web.dev/articles/fcp?hl=zh-cn) 衡量的是从页面导航开始到页面有任何内容渲染出来所用的时间。
 
 > 任何内容指的是文本、图片（包括背景图）、`svg` 及 `canvas` 元素（Google 文档写的是非白色 `canvas`，但是我实际测试，白色、黑色甚至透明的 `canvas` 元素都能被 FCP 统计）。
 
@@ -40,8 +45,6 @@ FCP 包括上一个页面的卸载时间（如果是页面间跳转的话），�
 
 低熵图片不满足 LCP 的候选条件，但满足 FCP 的条件，因为 FCP 统计的是任何可见元素，不管它是否包含有效内容。
 :::
-
-对于最大内容的定义，官方规则还要更加严格和详细，但这不是我们关注的重点，对于有些知识，浅尝辄止即可。
 
 ### 最大内容的尺寸
 
