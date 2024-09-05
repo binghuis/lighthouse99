@@ -8,7 +8,7 @@ hero:
   actions:
     - theme: brand
       text: 优化指南
-      link: /reassessing-fe-performance-ptimization
+      link: /web-vitals
     - theme: alt
       text: 监控方案
       link: /guide

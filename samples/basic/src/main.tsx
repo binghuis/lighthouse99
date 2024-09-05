@@ -5,8 +5,11 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import TimingAllowOrigin from "./TimingAllowOrigin.tsx";
 import FCP from "./FCP.tsx";
 import { LH99 } from "lighthouse99";
+import TTFBPage from "./TTFB.tsx";
+
 const lh99 = new LH99("appId");
 lh99.init();
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -20,6 +23,10 @@ const router = createBrowserRouter([
     path: "/fcp",
     element: <FCP />,
   },
+  {
+    path: "/ttfb",
+    element: <TTFBPage />,
+  },
 ]);
 
 createRoot(document.getElementById("root")!).render(
@@ -28,6 +35,7 @@ createRoot(document.getElementById("root")!).render(
       <a href="/">LCP</a>
       <a href="/timing-allow-origin">TimingAllowOrigin</a>
       <a href="/fcp">FCP</a>
+      <a href="/ttfb">TTFB</a>
     </div>
     <div className="flex-1">
       <RouterProvider router={router} />
