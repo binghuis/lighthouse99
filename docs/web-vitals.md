@@ -26,7 +26,11 @@ Web Vitals（网页指标）是 Google 推出的一套用于衡量网页用户�
 
 尽管 `PerformanceEntry` 提供了一些通用的属性和方法来访问性能数据，但是不同类型的性能数据（如资源加载、页面导航、用户交互等）具有不同的特性和需求，因此需要更具体的子类来表示这些数据，实际上所有的网页指标都基于 `PerformanceEntry` 基类实现了自己的子类。
 
-现在通过方法 `performance.getEntriesByName("first-contentful-paint")` 获取 FCP 的性能条目，打印结果如下：
+通过方法 `getEntriesByName` 获取 FCP 的性能条目：
+
+```js
+performance.getEntriesByName("first-contentful-paint");
+```
 
 ::: details 展开查看 FCP 性能条目 `PerformancePaintTiming`。
 
@@ -45,11 +49,11 @@ Web Vitals（网页指标）是 Google 推出的一套用于衡量网页用户�
 
 :::
 
-除了 `getEntriesByName`，`performance.getEntries` 和 `performance.getEntriesByType` 都可以获取一组指标性能条目。
+除了 `getEntriesByName`，方法 `getEntries` 和 `getEntriesByType` 都可以获取一组指标性能条目。
 
 > 了解性能条目都有哪些 [性能条目类型（`entryType`）](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/entryType)。
 
-下面通过 `performance.getEntriesByType("resource")` 获取一组资源加载类型的性能条目，`PerformanceResourceTiming` 是资源加载类型的性能条目子类，同样扩展自 `PerformanceEntry` 基类。
+下面获取一组资源加载类型的性能条目，`PerformanceResourceTiming` 是资源加载类型的性能条目子类，同样继承自 `PerformanceEntry`。
 
 **所有的性能条目类型都继承自 `PerformanceEntry` 基类，这一点后续不再重复。**
 
@@ -99,7 +103,43 @@ performance.getEntriesByType("resource");
 
 ## PerformanceObserver
 
-尽管 `performance.getEntries`、`getEntriesByName` 和 `performance.getEntriesByType` 这三个方法都能获取指标性能条目。但却有非常大的弊端。
+尽管 `getEntries`、`getEntriesByName` 和 `getEntriesByType` 这三个方法都能获取指标性能条目。但它们有两大问题。
 
-1. 它们只能获取方法被调用时已存在的性能条目。
-2.
+1. 只能获取方法被调用时已存在的性能条目。
+2. 无法获取条目类型（`entryType`）是 _element_、_event_、_largest-contentful-paint_、_layout-shift_、_longtask_ 的性能条目。这直接导致了部分核心性能指标数据无法获取，比如 LCP（受 _largest-contentful-paint_ 影响） 和 CLS（受 _layout-shift_ 影响）。
+
+要获取这些指标就需要使用 API [`PerformanceObserver`](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceObserver)。
+
+比如用 `PerformanceObserver` 获取 LCP 指标条目：
+
+```js
+new PerformanceObserver((entryList) => {
+  for (const entry of entryList.getEntries()) {
+    console.log("LCP candidate:", entry.startTime, entry);
+  }
+}).observe({ type: "largest-contentful-paint", buffered: true });
+```
+
+## JS 库 web-vitals
+
+现在你已经知道了如何使用不同的 WebAPI 去获取性能指标数据。
+
+但由于这些 API 计算指标的方式很多时候并不符合真实场景的需求，因此如果你要使用原生性能 API 去开发指标上报 SDK 就需要去抹平这些差异。而且很多时候基于对浏览器的了解和相关经验，很多事情做起来非常困难。
+
+> 指标计算方式具体差异看这里：[指标与 API 之间的区别](https://web.dev/articles/lcp?hl=zh-cn#differences-metric-api)。
+
+好在很多事情 Chrome 团队已经为我们解决了，通过开源包 [web-vitals](https://github.com/GoogleChrome/web-vitals)。
+
+它使用起来非常简单：
+
+```js
+import { onLCP, onINP, onCLS } from "web-vitals";
+
+onCLS(console.log);
+onINP(console.log);
+onLCP(console.log);
+```
+
+因此基于 web-vitals 开发指标上报 SDK 是非常好的选择。
+
+但 web-vitals 也不是万能的，它不支持 iframe 的指标获取，同源的也不行。因此如果有 iframe 指标收集的需求就需要我们独立解决了。
