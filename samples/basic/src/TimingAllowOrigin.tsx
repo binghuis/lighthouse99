@@ -5,6 +5,7 @@ function TimingAllowOrigin() {
     //   console.log(list.getEntries());
     // });
     // observer.observe({ type: "resource", buffered: true });
+    console.log(performance.getEntriesByType("resource"));
   }, []);
 
   return (
