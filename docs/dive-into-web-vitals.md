@@ -1,27 +1,39 @@
-# 深入了解 Google 网页指标计划
+# 深入了解 Web Vitals 所有指标
 
-下面是网页从开始导航到加载完成的过程示意图。图中所有的时间戳都是通过性能导航 API [PerformanceNavigationTiming](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming) 获取的，下图时间戳很多一看就知道是什么意思，也就不多说了，接下来只会提及几个和性能指标定义相关的时间戳。
+先看一张图，这张图在本文非常重要。它与两个性能 API 有关。
+
+- 导航计时 API [`Navigation Timing API`](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API/Navigation_timing) 对应指标性能条目 [`PerformanceNavigationTiming`](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming) 的生成。
+
+  性能条目 `PerformanceNavigationTiming` 与页面导航事件有关，页面的重载（`reload`）、跳转（`navigate`）都属于页面的导航事件，也就是说访问网页即触发页面导航事件。非常典型的一个性能指标 TTFB，它的指标条目就是 `PerformanceNavigationTiming` 类型的。
+
+- 资源计时 API [`Resource Timing API`](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API/Resource_timing) 对应指标性能条目 [`PerformanceResourceTiming`](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming) 的生成。
+
+  性能条目 `PerformanceResourceTiming` 与网络事件有关，比如 XHR 请求和 SVG、image、script 等资源加载。
+
+**也就是说这张图即表示网页的导航过程，也表示资源的加载过程，不过资源加载过程是时间戳`startTime` 到 `responseEnd`，也就是 _Resource Timing_。**
 
 ![页面加载过程](./assets/performance-navigation-timing-timestamp-diagram.svg)
 
-**`startTime`：** 当页面导航开始时的时间戳。在浏览器中输入网址并按下回车，或在页面内点击链接触发跳转，都会启动页面导航。
+由于页面导航事件更加复杂并且包含资源加载过程，因此下面以页面导航过程为例介绍几个重要时间戳。
 
-**`responsestart`：** 页面请求开始返回时的时间戳，此时页面开始响应。
+**`startTime`：** 当页面导航开始时的时间戳。在浏览器中输入网址并按下回车，或在页面内点击链接触发跳转，都会启动页面导航，_注意纯前端路由跳转并不触发页面导航事件_。
 
-**`firstInterimResponsestart`：** 图中状态码 `103` 代表 `Early Hints` 「提前提示」，服务器在正式通过状态码 `200` 返回页面 HTML 之前，通过 `103` 可以提前告诉浏览器需要哪些资源，浏览器收到 `103` 响应之后可以提前下载这些资源。`firstInterimResponsestart` 记录的是页面请求「提前提示」响应开始时的时间戳。
+**`responsestart`：** 页面请求开始返回时的时间戳，此时页面开始响应，标志是页面接收到第一个字节。
+
+**`firstInterimResponsestart`：** 图中状态码 `103` 代表 `Early Hints` 「提前提示」响应，服务器在正式通过状态码 `200` 返回页面 HTML 之前，通过 `103` 可以提前告诉浏览器需要哪些资源，浏览器收到 `103` 响应之后可以提前下载这些资源。`firstInterimResponsestart` 记录的是页面请求「提前提示」响应开始时的时间戳。
 
 > - [出于兼容性和安全原因，建议仅通过 HTTP/2 或更高版本发送 HTTP 103 Early Hints 响应](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103#browser_compatibility)。
 > - [社区关于 103 状态码浏览器支持现状的测试](https://github.com/mdn/browser-compat-data/pull/24001)。
 
 ## TTFB 首字节到达时间
 
-[首字节到达时间（Time to First Byte）](https://web.dev/articles/ttfb?hl=zh-cn) 衡量的是从页面导航开始到页面响应开始（浏览器接收到第一个字节）所用的时间。
+[首字节到达时间（Time to First Byte）](https://web.dev/articles/ttfb?hl=en-US) 衡量的是从页面导航开始到页面响应开始（浏览器接收到第一个字节）所用的时间。
 
 当页面请求支持 103 「提前提示」 响应，TTFB 是 `startTime` 到 `firstInterimResponsestart`，否则 TTFB 是 `startTime` 到 `responsestart`。
 
 ## FCP 首次内容绘制
 
-[首次内容绘制（First Contentful Paint）](https://web.dev/articles/fcp?hl=zh-cn) 衡量的是从页面导航开始到页面有任何内容渲染出来所用的时间。
+[首次内容绘制（First Contentful Paint）](https://web.dev/articles/fcp?hl=en-US) 衡量的是从页面导航开始到页面有任何内容渲染出来所用的时间。
 
 > 任何内容指的是文本、图片（包括背景图）、`svg` 及 `canvas` 元素（Google 文档写的是非白色 `canvas`，但是我实际测试，白色、黑色甚至透明的 `canvas` 元素都能被 FCP 统计）。
 
@@ -29,7 +41,7 @@ FCP 包括上一个页面的卸载时间（如果是页面间跳转的话），�
 
 ## LCP 最大内容绘制
 
-[最大内容绘制（Largest Contentful Paint）](https://web.dev/articles/lcp?hl=zh-cn) 衡量的是用户从开始导航，到页面最显著的内容渲染出来，所用时间。
+[最大内容绘制（Largest Contentful Paint）](https://web.dev/articles/lcp?hl=en-US) 衡量的是用户从开始导航，到页面最显著的内容渲染出来，所用时间。
 
 **同 FCP 一样，LCP 也是从浏览器地址栏按下回车或在页面中点击路由跳转的那一刻开始计时。**
 
@@ -73,11 +85,11 @@ FCP 包括上一个页面的卸载时间（如果是页面间跳转的话），�
 
 LCP 代表用户能看到页面最有价值的内容需要等待多长时间。现代浏览器的首屏加载速度就是用 LCP 衡量的，因为此时用户已经可以看到页面的主要内容了。
 
-浏览器使用资源计时 API [PerformanceResourceTiming](https://developer.mozilla.org/zh-CN/docs/Web/API/Performance_API/Resource_timing) 来统计资源类型（如 XHR、SVG、图片、脚本）的指标条目。
+浏览器使用资源计时 API [PerformanceResourceTiming](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API/Resource_timing) 来统计资源类型（如 XHR、SVG、图片、脚本）的指标条目。
 
-指标条目是一个 [PerformanceEntry](https://developer.mozilla.org/zh-CN/docs/Web/API/PerformanceEntry) 对象，表示一条指标数据。
+指标条目是一个 [PerformanceEntry](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry) 对象，表示一条指标数据。
 
-在 [CORS](https://developer.mozilla.org/zh-CN/docs/Glossary/CORS) 生效的情况下，`PerformanceResourceTiming` 可以正常获取指标数据里的时间戳，否则，**跨域资源的响应头 `Timing-Allow-Origin` 必须设置有效源，资源类型的指标数据时间戳才会正常计算，无法正常计算的指标数据时间戳将被设置为 0**。
+在 [CORS](https://developer.mozilla.org/en-US/docs/Glossary/CORS) 生效的情况下，`PerformanceResourceTiming` 可以正常获取指标数据里的时间戳，否则，**跨域资源的响应头 `Timing-Allow-Origin` 必须设置有效源，资源类型的指标数据时间戳才会正常计算，无法正常计算的指标数据时间戳将被设置为 0**。
 
 ::: details 点击查看 `Timing-Allow-Origin` 对 LCP 指标时间戳的影响。
 
@@ -115,10 +127,10 @@ TTI 越短，代表用户能越早与页面进行交互。但是 TTI 有个很�
 B 中有一个非常长的长任务，在此期间网页的渲染被阻塞，用户完全无法与页面进行交互。A 有三个较短的长任务，尽管用户会感知到页面的交互有阻塞，但是远没有 B 严重，但是 TTI 的计算方式下，A 和 B 的 TTI 指标缺差不多。TTI 明显无法有效的体现页面的可交互情况。
 
 因此在 Lighthouse 10 TTI 作为指标已被移除了。
-[TTI 的计算方式](https://web.dev/articles/tti?hl=zh-cn)
+[TTI 的计算方式](https://web.dev/articles/tti?hl=en-US)
 作为代替 TBT 计算的是长任务中超出 50ms 的时间总和，也就是页面的阻塞时间总和，如此计算，页面 A 的 TBT 是 3ms，页面 B 是 9750 毫秒。TBT 可以准确的表示页面的交互阻塞情况。
 
-[TBT VS TTI](https://web.dev/articles/tbt?hl=zh-cn)
+[TBT VS TTI](https://web.dev/articles/tbt?hl=en-US)
 
 ## 累计布局偏移 Cumulative Layout Shift
 
@@ -126,7 +138,7 @@ CLS 用于衡量视觉稳定性，表示用户遇到意外布局偏移的频率�
 
 CLS 衡量的是页面整个生命周期内发生的所有单个布局偏移得分的总和。
 
-[尽可能减少布局偏移指南](https://developers.google.com/publisher-tag/guides/minimize-layout-shift?hl=zh-cn)
+[尽可能减少布局偏移指南](https://developers.google.com/publisher-tag/guides/minimize-layout-shift?hl=en-US)
 
 [youtube CLS 的介绍](https://www.youtube.com/watch?v=zIJuY-JCjqw)
 

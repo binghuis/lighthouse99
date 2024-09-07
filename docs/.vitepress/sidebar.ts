@@ -16,6 +16,10 @@ export const SIDEBAR = [
         text: "了解 Google 网页指标计划",
         link: "/web-vitals",
       },
+      {
+        text: "深入了解 Web Vitals 所有指标",
+        link: "/dive-into-web-vitals",
+      },
     ],
   },
 ];

@@ -6,7 +6,7 @@
 本仓库内容是基于 [Chrome lighthouse 10](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring?hl=zh-cn) 的实践。
 
 1. 了解 Google 网页指标（Web Vitals）计划和 web-vitals 包。
-2. 深入了解 Web Vitals 计划各个性能指标的含义。
+2. 深入了解 Web Vitals 各个指标。
 3. 深入了解 Lighthouse 10。
 4. 如何获取网络指标。
 5. 借助 web-vitals 定制化开发网站性能指标 SDK。
