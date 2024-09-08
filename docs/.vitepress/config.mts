@@ -50,6 +50,10 @@ export default defineConfig({
       infoLabel: "信息",
       detailsLabel: "详细信息",
     },
+    image: {
+      // 默认禁用图片懒加载
+      lazyLoading: true,
+    },
   },
   lastUpdated: true,
 });

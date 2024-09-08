@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 function TimingAllowOrigin() {
   useEffect(() => {
-    // const observer = new PerformanceObserver((list) => {
-    //   console.log(list.getEntries());
-    // });
-    // observer.observe({ type: "resource", buffered: true });
-    console.log(performance.getEntriesByType("resource"));
+    const observer = new PerformanceObserver((list) => {
+      const entries = list.getEntries();
+      console.log(entries);
+    });
+    observer.observe({ type: "largest-contentful-paint", buffered: true });
   }, []);
 
   return (

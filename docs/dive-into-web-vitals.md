@@ -16,7 +16,7 @@
 
 由于页面导航事件更加复杂并且包含资源加载过程，因此下面以页面导航过程为例介绍几个重要时间戳。
 
-**`startTime`：** 当页面导航开始时的时间戳。在浏览器中输入网址并按下回车，或在页面内点击链接触发跳转，都会启动页面导航，_注意纯前端路由跳转并不触发页面导航事件_。
+**`startTime`：** 页面导航事件开始的时间戳。在浏览器中输入网址并按下回车，或在页面内点击链接触发跳转，都会启动页面导航，_注意纯前端路由跳转并不触发页面导航事件_。
 
 **`responsestart`：** 页面请求开始返回时的时间戳，此时页面开始响应，标志是页面接收到第一个字节。
 
@@ -25,11 +25,15 @@
 > - [出于兼容性和安全原因，建议仅通过 HTTP/2 或更高版本发送 HTTP 103 Early Hints 响应](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/103#browser_compatibility)。
 > - [社区关于 103 状态码浏览器支持现状的测试](https://github.com/mdn/browser-compat-data/pull/24001)。
 
+在熟悉了页面导航和资源加载过程之后，下面开始详细的介绍各个网页性能指标。
+
 ## TTFB 首字节到达时间
 
 [首字节到达时间（Time to First Byte）](https://web.dev/articles/ttfb?hl=en-US) 衡量的是从页面导航开始到页面响应开始（浏览器接收到第一个字节）所用的时间。
 
-当页面请求支持 103 「提前提示」 响应，TTFB 是 `startTime` 到 `firstInterimResponsestart`，否则 TTFB 是 `startTime` 到 `responsestart`。
+当页面请求支持 103 「提前提示」 响应，TTFB 是 `startTime` - `firstInterimResponsestart`，否则 TTFB 是 `startTime` - `responsestart`。
+
+> 客户端渲染的 TTFB 通常比服务端渲染的 TTFB 要快。详细介绍看我之前写的 [深入了解 Next.js 中 CSR、SSR、SSG、ISR 四种前端渲染方式](https://binghuis.vercel.app/posts/dive-into-csr-ssr-ssg-isr/)。
 
 ## FCP 首次内容绘制
 
@@ -37,13 +41,13 @@
 
 > 任何内容指的是文本、图片（包括背景图）、`svg` 及 `canvas` 元素（Google 文档写的是非白色 `canvas`，但是我实际测试，白色、黑色甚至透明的 `canvas` 元素都能被 FCP 统计）。
 
-FCP 包括上一个页面的卸载时间（如果是页面间跳转的话），也就是说。
+> 服务端渲染与客户端渲染的主要区别在于，数据处理和 HTML 渲染发生的环境不同。CSR 通过 JS 在浏览器中构建页面，需要从服务器获取大量的 JS 代码，而 SSR 则在服务器上直接完成数据处理和页面渲染，返回的 HTML 已包含完整的 DOM 树。因此，SSR 省去了大量 JS chuks 的传输，通常 FCP 要比 CSR 快。
+>
+> 详细介绍看我之前写的 [深入了解 Next.js 中 CSR、SSR、SSG、ISR 四种前端渲染方式](https://binghuis.vercel.app/posts/dive-into-csr-ssr-ssg-isr/)。
 
 ## LCP 最大内容绘制
 
-[最大内容绘制（Largest Contentful Paint）](https://web.dev/articles/lcp?hl=en-US) 衡量的是用户从开始导航，到页面最显著的内容渲染出来，所用时间。
-
-**同 FCP 一样，LCP 也是从浏览器地址栏按下回车或在页面中点击路由跳转的那一刻开始计时。**
+[最大内容绘制（Largest Contentful Paint）](https://web.dev/articles/lcp?hl=en-US) 衡量的是用户从开始导航，到页面最显著的（最大的）内容渲染出来，所用时间。
 
 最大内容指的是页面中最显著的可见的元素，如图片、文本块或视频，其必须包含有价值的信息，以确保对用户具有实际意义。
 
@@ -60,11 +64,17 @@ FCP 包括上一个页面的卸载时间（如果是页面间跳转的话），�
 
 ### 最大内容的尺寸
 
-### LCP 条目的创建时机
+### `Timing-Allow-Origin` 对 LCP 性能数据的影响
+
+出于安全考虑，对于要在页面上呈现的跨域资源（比如网络图片），资源响应头 `Timing-Allow-Origin` 必须设置有效源，浏览器才能获取资源的渲染时间戳（`renderTime`），否则只能获取到资源的加载时间戳（`loadTime`），那些获取不到的时间戳将被设置为 0，所以可能会出现 LCP 比 FCP 快的诡异情况。
+
+<img src='./assets/local-lcp.png' width='360px' >
+
+### LCP 性能条目的创建时机
 
 在页面渲染过程中，新的元素不断呈现给用户，这会导致最大内容可能会不断变化，初始渲染时确定的最大内容不断被后续渲染的新内容所替代。
 
-每次确定最大内容，浏览器都会创建一个 `largest-contentful-paint` 条目。
+每次确定最大内容，浏览器都会创建一个 LCP 性能条目。LCP 性能条目是一个 `entryType` 为 `largest-contentful-paint` 的 [`LargestContentfulPaint`](https://developer.mozilla.org/en-US/docs/Web/API/LargestContentfulPaint) 对象。
 
 只要用户开始与页面进行交互（当鼠标、键盘事件发生），LCP 监测会立即停止，不再创建新的 LCP 条目。
 
@@ -72,7 +82,7 @@ FCP 包括上一个页面的卸载时间（如果是页面间跳转的话），�
 
 > 即使从视口或 DOM 中移除最大的内容元素，只要没有呈现更大的元素，它仍然被视为最大的内容元素。这种机制在图片轮播等场景中尤为适用。
 
-::: details 点击观察多个 LCP 条目的创建。
+::: details 点击查看多个 LCP 条目的创建。
 
 三个色块按照从小到大的顺序依次渲染，在这个过程中页面最大内容不断变化，因此创建了不止一个 LCP 条目。
 
@@ -83,24 +93,7 @@ FCP 包括上一个页面的卸载时间（如果是页面间跳转的话），�
 <img src='./assets/lg-performanceentry.png'>
 :::
 
-LCP 代表用户能看到页面最有价值的内容需要等待多长时间。现代浏览器的首屏加载速度就是用 LCP 衡量的，因为此时用户已经可以看到页面的主要内容了。
-
-浏览器使用资源计时 API [PerformanceResourceTiming](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API/Resource_timing) 来统计资源类型（如 XHR、SVG、图片、脚本）的指标条目。
-
-指标条目是一个 [PerformanceEntry](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry) 对象，表示一条指标数据。
-
-在 [CORS](https://developer.mozilla.org/en-US/docs/Glossary/CORS) 生效的情况下，`PerformanceResourceTiming` 可以正常获取指标数据里的时间戳，否则，**跨域资源的响应头 `Timing-Allow-Origin` 必须设置有效源，资源类型的指标数据时间戳才会正常计算，无法正常计算的指标数据时间戳将被设置为 0**。
-
-::: details 点击查看 `Timing-Allow-Origin` 对 LCP 指标时间戳的影响。
-
-跨域图片没有配置 `Timing-Allow-Origin`，指标时间戳被限制获取，除了 [startTime](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/startTime)、
-[duration](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEntry/duration)、[responseEnd](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/responseEnd)、[fetchStart](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming/fetchStart) 之外，其余都是 0。
-
-| 本地图片                                  | 跨域图片                                   |
-| ----------------------------------------- | ------------------------------------------ |
-| <img src='./assets/local-resource.png' /> | <img src='./assets/remote-resource.png' /> |
-
-:::
+现代浏览器的首屏加载速度就是用 LCP 衡量的，此时标志着用户已经能看到页面最重要的内容了。
 
 ## 总阻塞时间 Total Blocking Time
 
