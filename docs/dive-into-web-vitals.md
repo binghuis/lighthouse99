@@ -95,6 +95,10 @@
 
 现代浏览器的首屏加载速度就是用 LCP 衡量的，此时标志着用户已经能看到页面最重要的内容了。
 
+## INP 下次绘制交互
+
+[下次绘制交互（Interaction to Next Paint ）](https://web.dev/articles/inp) 衡量的是
+
 ## 总阻塞时间 Total Blocking Time
 
 TBT 衡量的是网页的可交互性。
@@ -134,9 +138,5 @@ CLS 衡量的是页面整个生命周期内发生的所有单个布局偏移得�
 [尽可能减少布局偏移指南](https://developers.google.com/publisher-tag/guides/minimize-layout-shift?hl=en-US)
 
 [youtube CLS 的介绍](https://www.youtube.com/watch?v=zIJuY-JCjqw)
-
-## 速度指数 Speed Index
-
-[网络状况报告](https://httparchive.org/)
 
 ## 自定义指标
