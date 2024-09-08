@@ -19,4 +19,4 @@ TBT 30
 CLS 25
 
 如何确定指标得分
-https://developer.chrome.com/docs/lighthouse/performance/performance-scoring?hl=zh-cn#metric-scores
+https://developer.chrome.com/docs/lighthouse/performance/performance-scoring#metric-scores

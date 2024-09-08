@@ -3,7 +3,7 @@
 ![googlechrome](https://img.shields.io/badge/Google_Chrome-4285F4?logo=googlechrome&labelColor=263238)
 ![lighthouse 10](https://img.shields.io/badge/Lighthouse_10-F44B21?logo=lighthouse&labelColor=263238)
 
-本仓库内容是基于 [Chrome lighthouse 10](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring?hl=zh-cn) 的实践。
+本仓库内容是基于 [Chrome lighthouse 10](https://developer.chrome.com/docs/lighthouse/performance/performance-scoring) 的实践。
 
 1. 了解 Google 网页指标（Web Vitals）计划和 web-vitals 包。
 2. 深入了解 Web Vitals 各个指标。
