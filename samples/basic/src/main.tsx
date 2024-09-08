@@ -6,6 +6,7 @@ import TimingAllowOrigin from "./TimingAllowOrigin.tsx";
 import FCP from "./FCP.tsx";
 import { LH99 } from "lighthouse99";
 import TTFBPage from "./TTFB.tsx";
+import INPPage from "./INP.tsx";
 
 const lh99 = new LH99("appId");
 lh99.init();
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
     path: "/ttfb",
     element: <TTFBPage />,
   },
+  {
+    path: "/inp",
+    element: <INPPage />,
+  },
 ]);
 
 createRoot(document.getElementById("root")!).render(
@@ -36,6 +41,7 @@ createRoot(document.getElementById("root")!).render(
       <a href="/timing-allow-origin">TimingAllowOrigin</a>
       <a href="/fcp">FCP</a>
       <a href="/ttfb">TTFB</a>
+      <a href="/inp">INP</a>
     </div>
     <div className="flex-1">
       <RouterProvider router={router} />

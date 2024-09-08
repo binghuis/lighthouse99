@@ -16,7 +16,11 @@ const Canvas = () => {
     context.fillRect(50, 50, 100, 100);
   }, []);
 
-  return <canvas ref={canvasRef} />;
+  return (
+    <div>
+      <canvas ref={canvasRef} />
+    </div>
+  );
 };
 
 export default Canvas;
