@@ -43,3 +43,5 @@ SI
 | 好     |      ≤ 3.4       |
 | 待改进 | 3.4 < 用时 ≤ 5.8 |
 | 差     |      > 5.8       |
+
+[中国全平台浏览器市场占有率报告](https://gs.statcounter.com/browser-market-share/all/china)
