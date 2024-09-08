@@ -57,7 +57,7 @@ FCP 的性能条目是由资源计时 API 获取的，性能条目类型是 `Per
 
 [最大内容绘制（Largest Contentful Paint）](https://web.dev/articles/lcp) 衡量的是用户从开始导航，到页面最显著的（最大的）内容渲染出来，所用时间。
 
-LCP 的性能条目是由 API `LargestContentfulPaint` 获取的，性能条目类型也是 `LargestContentfulPaint`。
+LCP 的性能条目是由 [最大内容绘制 API](https://w3c.github.io/largest-contentful-paint/) 获取的，性能条目类型也是 `LargestContentfulPaint`。
 
 最大内容指的是页面中可见的最大图片、文本块或视频，其必须包含有价值的信息，以确保对用户具有实际意义。
 
@@ -105,13 +105,13 @@ LCP 的性能条目是由 API `LargestContentfulPaint` 获取的，性能条目�
 
 现代浏览器的首屏加载速度就是用 LCP 衡量的，此时标志着用户已经能看到页面最重要的内容了。
 
-## INP 下次绘制交互
+## INP 下次绘制交互时间
 
-[下次绘制交互（Interaction to Next Paint ）](https://web.dev/articles/inp) 衡量的是
+[下次绘制交互时间（Interaction to Next Paint ）](https://web.dev/articles/inp) 衡量的是整个页面使用期间的交互响应时间。
 
 ## 总阻塞时间 Total Blocking Time
 
-TBT 衡量的是网页的可交互性。
+TBT 衡量的是页面加载期间，阻塞主线程的时间，它直接影响页面在加载时的首次交互响应速度。
 
 在 Lighthouse 10 之前，衡量这一指标用的是**可交互时间** TTI (Time to Interactive) ，它代表网页满足可靠可交互所需的时间。
 可靠可交互网页需满足条件：
