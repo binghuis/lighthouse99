@@ -49,7 +49,7 @@ export class LH99 {
     onFCP(addToQueue);
     onLCP(addToQueue);
     onCLS(addToQueue);
-    onINP(addToQueue);
+    onINP(addToQueue, { reportAllChanges: true });
     onTTFB(addToQueue);
   }
 }

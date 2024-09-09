@@ -109,7 +109,19 @@ LCP 的性能条目是由 [最大内容绘制 API](https://w3c.github.io/largest
 
 [下次绘制交互时间（Interaction to Next Paint）](https://web.dev/articles/inp) 衡量的是整个页面使用期间每次用户与页面交互到下次页面绘制所用的最长时间。
 
-用户与页面的交互指的是点按操作，比如键盘交互、鼠标点击、触屏点击。鼠标悬停、滚轮滚动、触屏滑动、页面放大缩小等操作不计入 INP 统计。
+用户与页面的交互指的仅是点按操作，比如键盘交互、鼠标点击、触屏点击。鼠标悬停、滚轮滚动、触屏滑动、页面放大缩小等操作都不计入 INP 统计。
+
+用户与页面交互实际包含了多个阶段，INP 的值取的是多个阶段用时最大值。下图是官方示意图，表示一个鼠标点击操作包含了两个阶段，第一阶段触发了 `mousedown` 事件，第二阶段触发了 `pointerup` 和 `click` 事件，每个阶段都计算了当前阶段从开始交互到页面绘制所有的时间，但 INP 取的是最大值，也就是第二阶段的值。
+
+<img src='./assets/a-depiction-more-complex.svg'>
+
+下面是我做的测试，同样是鼠标点击操作，图中包含了五个事件，`pointdown`、`mousedown`，`pointup`、`mouseup`、`click`，两个阶段分别是 528 和 512，最后 INP 的值是 528。这通过 web-vitals 的 onINP 方法可以印证。
+
+<img src='./assets/web-vitals-inp.png' width='480px' >
+
+::: details 点击查看鼠标点击过程创建的性能条目列表。
+<img src='./assets/inp.png'>
+:::
 
 为减少异常值对统计结果的影响，每 50 次交互中，系统会忽略耗时最长的一次操作。
 

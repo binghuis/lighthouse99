@@ -1,8 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function INPPage() {
   const [count, setCount] = useState(0);
   const [count2, setCount2] = useState(0);
+
+  useEffect(() => {
+    const observer = new PerformanceObserver((list) => {
+      console.log(list.getEntries());
+    });
+
+    observer.observe({ type: "event", buffered: true });
+  }, []);
   return (
     <div>
       <button
