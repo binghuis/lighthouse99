@@ -107,7 +107,13 @@ LCP 的性能条目是由 [最大内容绘制 API](https://w3c.github.io/largest
 
 ## INP 下次绘制交互时间
 
-[下次绘制交互时间（Interaction to Next Paint ）](https://web.dev/articles/inp) 衡量的是整个页面使用期间的交互响应时间。
+[下次绘制交互时间（Interaction to Next Paint）](https://web.dev/articles/inp) 衡量的是整个页面使用期间每次用户与页面交互到下次页面绘制所用的最长时间。
+
+用户与页面的交互指的是点按操作，比如键盘交互、鼠标点击、触屏点击。鼠标悬停、滚轮滚动、触屏滑动、页面放大缩小等操作不计入 INP 统计。
+
+为减少异常值对统计结果的影响，每 50 次交互中，系统会忽略耗时最长的一次操作。
+
+INP 的性能条目是由事件计时 API 获取的，性能条目类型是 [`PerformanceEventTiming`](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEventTiming)。
 
 ## 总阻塞时间 Total Blocking Time
 
