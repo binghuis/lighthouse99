@@ -2,13 +2,13 @@
 
 先看一张图，这张图在本文非常重要。它与两个性能 API 有关。
 
-- 资源计时 API [`Resource Timing API`](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API/Resource_timing) 对应指标性能条目 [`PerformanceResourceTiming`](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming) 的生成。
+- 资源计时 API [`Resource Timing API`](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API/Resource_timing) 对应指标性能条目 [`PerformanceResourceTiming`](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming) 的创建。
 
-  性能条目 `PerformanceResourceTiming` 与网络事件有关，比如 XHR 请求和 SVG、image、script 等资源加载。
+  性能条目 `PerformanceResourceTiming` 与网络事件有关，比如 fetch 请求和 SVG、image、script 等资源加载。
 
   `PerformanceResourceTiming` 是性能条目基类 `PerformanceEntry` 的子类。
 
-- 导航计时 API [`Navigation Timing API`](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API/Navigation_timing) 对应指标性能条目 [`PerformanceNavigationTiming`](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming) 的生成。
+- 导航计时 API [`Navigation Timing API`](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API/Navigation_timing) 对应指标性能条目 [`PerformanceNavigationTiming`](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming) 的创建。
 
   性能条目 `PerformanceNavigationTiming` 与页面导航事件有关，页面的重载（`reload`）、跳转（`navigate`）都属于页面的导航事件，也就是说访问网页即触发页面导航事件。非常典型的一个性能指标 TTFB，它的指标条目就是 `PerformanceNavigationTiming` 类型的。
 
@@ -49,15 +49,15 @@ FCP 的性能条目是由资源计时 API 获取的，性能条目类型是 `Per
 
 > 任何内容指的是文本、图片（包括背景图）、`svg` 及 `canvas` 元素（Google 文档写的是非白色 `canvas`，但是我实际测试，白色、黑色甚至透明的 `canvas` 元素都能被 FCP 统计）。
 
-> 服务端渲染与客户端渲染的主要区别在于，数据处理和 HTML 渲染发生的环境不同。CSR 通过 JS 在浏览器中构建页面，需要从服务器获取大量的 JS 代码，而 SSR 则在服务器上直接完成数据处理和页面渲染，返回的 HTML 已包含完整的 DOM 树。因此，SSR 省去了大量 JS chuks 的传输，通常 FCP 要比 CSR 快。
+> **服务端渲染的 FCP 比客户端渲染的 FCP 快。** 因为 SSR 和 CSR 都要处理数据、构建页面，只不过一个发生在服务器一个发生在浏览器。SSR 在服务器上直接构建页面并返回结构完整的 HTML。但由于 CSR 需要通过 JS 在浏览器构建页面，因此需要从服务器获取大量的 JS chunks，这些 JS 文件的加载需要很多时间，导致 CSR 的第一个内容的渲染晚于 SSR。
 >
 > 详细介绍看我之前写的 [深入了解 Next.js 中 CSR、SSR、SSG、ISR 四种前端渲染方式](https://binghuis.vercel.app/posts/dive-into-csr-ssr-ssg-isr/)。
 
 ## LCP 最大内容绘制
 
-[最大内容绘制（Largest Contentful Paint）](https://web.dev/articles/lcp) 衡量的是用户从开始导航，到页面最显著的（最大的）内容渲染出来，所用时间。
+[最大内容绘制（Largest Contentful Paint）](https://web.dev/articles/lcp) 衡量的是从页面导航开始到到页面最显著的（最大的）内容渲染出来所用的时间。
 
-LCP 的性能条目是由 [最大内容绘制 API](https://w3c.github.io/largest-contentful-paint/) 获取的，性能条目类型也是 `LargestContentfulPaint`。
+LCP 的性能条目是由 [最大内容绘制 API](https://w3c.github.io/largest-contentful-paint/) 获取的，性能条目类型是 `LargestContentfulPaint`。
 
 最大内容指的是页面中可见的最大图片、文本块或视频，其必须包含有价值的信息，以确保对用户具有实际意义。
 
@@ -67,7 +67,7 @@ LCP 的性能条目是由 [最大内容绘制 API](https://w3c.github.io/largest
 > 而带封面的视频，LCP 时间戳则取封面和第一帧呈现时间的较早达到者。详情查看 [官方说明](https://chromium.googlesource.com/chromium/src/+/refs/heads/main/docs/speed/metrics_changelog/2023_08_lcp.md)。
 
 ::: tip
-低熵图片指的是那些在视觉上包含信息量较少的图像。
+**低熵图片：** 指的是那些在视觉上包含信息量较少的图像。
 
 低熵图片不满足 LCP 的候选条件，但满足 FCP 的条件，因为 FCP 统计的是任何可见元素，不管它是否包含有效内容。
 :::
@@ -76,7 +76,7 @@ LCP 的性能条目是由 [最大内容绘制 API](https://w3c.github.io/largest
 
 ### 跨域资源的处理
 
-出于安全考虑，对于要在页面上呈现的跨域资源（比如网络图片），资源响应头 `Timing-Allow-Origin` 必须设置有效源，浏览器才能获取资源的渲染时间戳（`renderTime`），否则只能获取到资源的加载时间戳（`loadTime`），那些获取不到的时间戳将被设置为 0。所以可能会出现 LCP 比 FCP 还快的诡异现象，不过这种现象如果你用 web-vitals JS 包就不会遇到，因为获取不到渲染时间，web-vitals 就不会创建 LCP 性能条目。
+出于安全考虑，对于要在页面上呈现的跨域资源（比如网络图片），资源响应头 `Timing-Allow-Origin` 必须设置有效源，浏览器才能获取资源的渲染时间戳（`renderTime`），时间戳若无法被获取将被设为 0，所以可能会出现 LCP 比 FCP 还快的诡异现象。web-vitals 的处理方式是直接忽视那些无权访问的跨域资源。
 
 <img src='./assets/local-lcp.png' width='360px' >
 
