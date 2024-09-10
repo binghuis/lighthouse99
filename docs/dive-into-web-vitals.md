@@ -99,7 +99,13 @@ LCP 的性能条目是由 [最大内容绘制 API](https://w3c.github.io/largest
 [点击查看色块页面源代码](https://gist.github.com/binghuis/0142b10a82ff4f199ee4dc8eec9fd186)。
 
 <img src='./assets/lcp-block.png'>
+
+---
+
 <img src='./assets/md-performanceentry.png'>
+
+---
+
 <img src='./assets/lg-performanceentry.png'>
 :::
 
@@ -107,25 +113,38 @@ LCP 的性能条目是由 [最大内容绘制 API](https://w3c.github.io/largest
 
 ## INP 下次绘制交互时间
 
-[下次绘制交互时间（Interaction to Next Paint）](https://web.dev/articles/inp) 衡量的是整个页面使用期间每次用户与页面交互到下次页面绘制所用的最长时间。
+[下次绘制交互时间（Interaction to Next Paint）](https://web.dev/articles/inp) 衡量的是整个页面使用期间用户所有交互响应延迟中的最大值。为减少异常值对统计结果的影响，每 50 次交互中，系统会忽略耗时最长的一次操作。
 
-用户与页面的交互指的仅是点按操作，比如键盘交互、鼠标点击、触屏点击。鼠标悬停、滚轮滚动、触屏滑动、页面放大缩小等操作都不计入 INP 统计。
+INP 的性能条目是由事件计时 API 获取的，性能条目类型是 [`PerformanceEventTiming`](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEventTiming)。
 
-用户与页面交互实际包含了多个阶段，INP 的值取的是多个阶段用时最大值。下图是官方示意图，表示一个鼠标点击操作包含了两个阶段，第一阶段触发了 `mousedown` 事件，第二阶段触发了 `pointerup` 和 `click` 事件，每个阶段都计算了当前阶段从开始交互到页面绘制所有的时间，但 INP 取的是最大值，也就是第二阶段的值。
+INP 统计的用户交互主要包括：点击事件、轻触事件（移动设备）、按键事件。鼠标悬停、滚轮滚动、触屏滑动、页面缩放等操作不计入 INP 的统计。
+
+**INP 的计算方式：** 每次用户交互实际包含了多个阶段，INP 会统计整个交互期间所有阶段的持续时间，并取其中的最大值。
+
+下图是一张官方示意图，展示了一个鼠标点击操作包含了多个事件：第一阶段触发了 `mousedown`，第二阶段触发了 `pointerup` 和 `click`。INP 会获取每个阶段从用户输入开始到下一次绘制的时间，并取最大值作为该次交互的 INP 值。
 
 <img src='./assets/a-depiction-more-complex.svg'>
 
-下面是我做的测试，同样是鼠标点击操作，图中包含了五个事件，`pointdown`、`mousedown`，`pointup`、`mouseup`、`click`，两个阶段分别是 528 和 512，最后 INP 的值是 528。这通过 web-vitals 的 onINP 方法可以印证。
+下面测试鼠标点击操作触发的所有事件并验证 INP 的值。
+
+::: details 点击查看验证结果。
+一个鼠标点击操作触发了两个阶段：
+
+- 第一阶段的事件是 `pointdown`、`mousedown`，事件响应延迟是 528。
+- 第二阶段的事件是 `pointup`、`mouseup`、`click`，事件响应延迟是 512。
+
+INP 取两个阶段中最大的事件响应延迟，因此 INP 的值是 528。
+
+下面用 web-vitals 的 `onINP` 方法验证：
 
 <img src='./assets/web-vitals-inp.png' width='480px' >
 
-::: details 点击查看鼠标点击过程创建的性能条目列表。
+---
+
+鼠标点击交互触发的所有事件：
 <img src='./assets/inp.png'>
+
 :::
-
-为减少异常值对统计结果的影响，每 50 次交互中，系统会忽略耗时最长的一次操作。
-
-INP 的性能条目是由事件计时 API 获取的，性能条目类型是 [`PerformanceEventTiming`](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEventTiming)。
 
 ## 总阻塞时间 Total Blocking Time
 
