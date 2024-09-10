@@ -31,17 +31,17 @@
 
 在熟悉了页面导航和资源加载过程之后，下面开始详细的介绍各个网页性能指标。
 
-## TTFB 首字节到达时间
+## 首字节到达时间 TTFB
 
 [首字节到达时间（Time to First Byte）](https://web.dev/articles/ttfb) 衡量的是从页面导航开始到页面响应开始（浏览器接收到第一个字节）所用的时间。
 
 当页面请求支持 103 「提前提示」 响应，TTFB 是 `startTime` - `firstInterimResponsestart`，否则 TTFB 是 `startTime` - `responsestart`。如开篇图所示，这期间涉及到页面重定向、Service Worker 处理、HTTP 缓存处理、DNS 寻址、TCP 连接等多个过程。
 
-指标 TTFB 代表了服务器响应速度和网络连接效率。
+TTFB 代表了服务器响应速度和网络连接效率。
 
 > 客户端渲染的 TTFB 通常比服务端渲染的 TTFB 要快。详细介绍看我之前写的 [深入了解 Next.js 中 CSR、SSR、SSG、ISR 四种前端渲染方式](https://binghuis.vercel.app/posts/dive-into-csr-ssr-ssg-isr/)。
 
-## FCP 首次内容绘制
+## 首次内容绘制 FCP
 
 [首次内容绘制（First Contentful Paint）](https://web.dev/articles/fcp) 衡量的是从页面导航开始到页面有实际内容渲染出来所用的时间。
 
@@ -53,7 +53,7 @@
 >
 > 详细介绍看我之前写的 [深入了解 Next.js 中 CSR、SSR、SSG、ISR 四种前端渲染方式](https://binghuis.vercel.app/posts/dive-into-csr-ssr-ssg-isr/)。
 
-## LCP 最大内容绘制
+## 最大内容绘制 LCP
 
 [最大内容绘制（Largest Contentful Paint）](https://web.dev/articles/lcp) 衡量的是从页面导航开始到到页面最显著的（最大的）内容渲染出来所用的时间。
 
@@ -111,7 +111,7 @@ LCP 是衡量页面加载性能的一个核心网页指标，它关注页面上�
 <img src='./assets/lg-performanceentry.png'>
 :::
 
-## INP 下次绘制交互时间
+## 下次绘制交互时间 INP
 
 [下次绘制交互时间（Interaction to Next Paint）](https://web.dev/articles/inp) 衡量的是整个页面使用期间用户所有交互中最长的响应延迟。
 
@@ -148,7 +148,7 @@ INP 取两个阶段中最大的事件响应延迟，因此 INP 的值是 528。
 
 :::
 
-## TBT 总阻塞时间
+## 总阻塞时间 TBT
 
 [Total Blocking Time](https://web.dev/articles/tbt) 衡量的是页面从首次内容绘制（FCP）到达到完全可交互（TTI）状态，主线程被阻塞的时间总和。
 
@@ -181,9 +181,11 @@ _安静窗口：没有长任务且不超过两个正在进行的 GET 请求。_
 
    比如在 10s 内分布 3 个 51ms 的长任务，它的 TTI 和 10s 内只有一个 9.5s 的长任务的 TTI 几乎是一样的。但是我们知道一个 9s 的任务阻塞有多让人绝望。TBT 作为阻塞总时长的指标，可以很好的表示这一点，TBT 3ms 和 900ms 一眼就能看出来页面加载中的阻塞情况。
 
-**TTI 和 TBT 代表的都是页面加载过程中的阻塞情况，但是 TBT 的计算方式更合 因此 TBT 取代 TTI 作为衡量页面加载过程中阻塞情况的新指标。**
+**TTI 和 TBT 衡量的都是页面加载过程中的阻塞情况，但是 TBT 的计算方式更合 因此 TBT 取代 TTI 作为衡量页面加载过程中阻塞情况的新指标。**
 
-## 累计布局偏移 Cumulative Layout Shift
+## 累计布局偏移 CLS
+
+Cumulative Layout Shift
 
 CLS 用于衡量视觉稳定性，表示用户遇到意外布局偏移的频率。
 
