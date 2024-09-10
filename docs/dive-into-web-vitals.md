@@ -37,7 +37,7 @@
 
 当页面请求支持 103 「提前提示」 响应，TTFB 是 `startTime` - `firstInterimResponsestart`，否则 TTFB 是 `startTime` - `responsestart`。如开篇图所示，这期间涉及到页面重定向、Service Worker 处理、HTTP 缓存处理、DNS 寻址、TCP 连接等多个过程。
 
-指标 TTFB 反应了服务器响应速度和网络连接效率。
+指标 TTFB 代表了服务器响应速度和网络连接效率。
 
 > 客户端渲染的 TTFB 通常比服务端渲染的 TTFB 要快。详细介绍看我之前写的 [深入了解 Next.js 中 CSR、SSR、SSG、ISR 四种前端渲染方式](https://binghuis.vercel.app/posts/dive-into-csr-ssr-ssg-isr/)。
 
@@ -148,35 +148,40 @@ INP 取两个阶段中最大的事件响应延迟，因此 INP 的值是 528。
 
 :::
 
-## 总阻塞时间 Total Blocking Time
+## TBT 总阻塞时间
 
-TBT 衡量的是页面加载期间，阻塞主线程的时间，它直接影响页面在加载时的首次交互响应速度。
+[Total Blocking Time](https://web.dev/articles/tbt) 衡量的是页面从首次内容绘制（FCP）到达到完全可交互（TTI）状态，主线程被阻塞的时间总和。
 
-在 Lighthouse 10 之前，衡量这一指标用的是**可交互时间** TTI (Time to Interactive) ，它代表网页满足可靠可交互所需的时间。
-可靠可交互网页需满足条件：
+执行时间超过 50ms 的任务就是长任务，一个长任务执行超出 50ms 的时间部分就是任务阻塞时间，所有长任务的阻塞时间总和就是 TBT。
 
-- 网页显示有效内容，即已完成 FCP 首次内容绘制。
-- 大多数可见页面元素已注册事件处理脚本。
-- 没有长任务阻塞用户交互响应。
+> TBT 与 INP 一个代表网页加载过程中的可交互性，一个代表网页使用过程中的可交互性。
 
-> 执行时间超过 50ms 的任务就是长任务。
+[TTI（Time to Interactive）可交互时间](https://web.dev/articles/tti) 是一个在 Lighthouse 10 中已经被废弃的指标，它衡量的是页面达到完全可交互状态的所用的时间，代表了页面加载过程中的阻塞情况。
 
-TTI 越短，代表用户能越早与页面进行交互。但是 TTI 有个很严重的问题，就是对离群网络请求和长任务非常敏感，举个例子：
+_完全可交互状态_ 指的是，页面已完成 FCP 首次内容绘制，大多数可见页面元素都已注册事件处理脚本并且在 50ms 内可以响应用户交互。
 
-离群网络请求指的是请求时间偏离正常范围的网络请求。
+<img src='./assets/a-page-load-timeline-show.svg' width='560px'>
 
-如果主线程空闲至少 5s 则为可靠交互页面。
+图片表示的是 TTI 的计算过程：
 
-网页 A 在 10s 内有三个执行 51ms 的长任务。
-网页 B 在 10s 内有一个执行 9.8s 的长任务。
+_安静窗口：没有长任务且不超过两个正在进行的 GET 请求。_
 
-B 中有一个非常长的长任务，在此期间网页的渲染被阻塞，用户完全无法与页面进行交互。A 有三个较短的长任务，尽管用户会感知到页面的交互有阻塞，但是远没有 B 严重，但是 TTI 的计算方式下，A 和 B 的 TTI 指标缺差不多。TTI 明显无法有效的体现页面的可交互情况。
+1. 从 FCP 开始向前查找至少 5s 的安静窗口。
+2. 从安静窗口再向后查找长任务，如果找到了长任务那么长任务的结束时间戳就是 TTI。
+3. 如果找不到长任务，那么会一直找到 FCP，FCP 时间戳就是 TTI。
 
-因此在 Lighthouse 10 TTI 作为指标已被移除了。
-[TTI 的计算方式](https://web.dev/articles/tti)
-作为代替 TBT 计算的是长任务中超出 50ms 的时间总和，也就是页面的阻塞时间总和，如此计算，页面 A 的 TBT 是 3ms，页面 B 是 9750 毫秒。TBT 可以准确的表示页面的交互阻塞情况。
+**为什么 TTI 被废弃了？**
 
-[TBT VS TTI](https://web.dev/articles/tbt)
+这个是对此的官方解释 [How does TBT relate to TTI?](https://web.dev/articles/tbt#how_does_tbt_relate_to_tti)。
+
+这里面提到两个关键点：
+
+1. 统计 TBT 的结束时间点不一定是 TTI，Lighthouse 时间跨度模式下，页面加载完 TBT 仍可以继续统计。
+2. TTI 无法真实表示页面加载过程中的阻塞情况，因为 TTI 对长任务非常敏感。
+
+   比如在 10s 内分布 3 个 51ms 的长任务，它的 TTI 和 10s 内只有一个 9.5s 的长任务的 TTI 几乎是一样的。但是我们知道一个 9s 的任务阻塞有多让人绝望。TBT 作为阻塞总时长的指标，可以很好的表示这一点，TBT 3ms 和 900ms 一眼就能看出来页面加载中的阻塞情况。
+
+**TTI 和 TBT 代表的都是页面加载过程中的阻塞情况，但是 TBT 的计算方式更合 因此 TBT 取代 TTI 作为衡量页面加载过程中阻塞情况的新指标。**
 
 ## 累计布局偏移 Cumulative Layout Shift
 
