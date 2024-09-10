@@ -2,6 +2,8 @@
 
 先看一张图，这张图在本文非常重要。它与两个性能 API 有关。
 
+![页面加载过程](./assets/performance-navigation-timing-timestamp-diagram.svg)
+
 - 资源计时 API [`Resource Timing API`](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API/Resource_timing) 对应指标性能条目 [`PerformanceResourceTiming`](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceResourceTiming) 的创建。
 
   性能条目 `PerformanceResourceTiming` 与网络事件有关，比如 fetch 请求和 SVG、image、script 等资源加载。
@@ -15,8 +17,6 @@
   `PerformanceNavigationTiming` 是 `PerformanceResourceTiming` 的子类。
 
 **也就是说这张图即表示资源的加载过程也表示网页的导航过程，不过资源加载过程是时间戳`startTime` 到 `responseEnd`，也就是 _Resource Timing_。**
-
-![页面加载过程](./assets/performance-navigation-timing-timestamp-diagram.svg)
 
 由于页面导航事件更加复杂并且包含资源加载过程，因此下面以页面导航过程为例介绍几个重要时间戳。
 
@@ -35,19 +35,19 @@
 
 [首字节到达时间（Time to First Byte）](https://web.dev/articles/ttfb) 衡量的是从页面导航开始到页面响应开始（浏览器接收到第一个字节）所用的时间。
 
-TTFB 的性能条目是由导航计时 API 获取的，性能条目类型是 `PerformanceNavigationTiming`。
+当页面请求支持 103 「提前提示」 响应，TTFB 是 `startTime` - `firstInterimResponsestart`，否则 TTFB 是 `startTime` - `responsestart`。如开篇图所示，这期间涉及到页面重定向、Service Worker 处理、HTTP 缓存处理、DNS 寻址、TCP 连接等多个过程。
 
-当页面请求支持 103 「提前提示」 响应，TTFB 是 `startTime` - `firstInterimResponsestart`，否则 TTFB 是 `startTime` - `responsestart`。
+指标 TTFB 反应了服务器响应速度和网络连接效率。
 
 > 客户端渲染的 TTFB 通常比服务端渲染的 TTFB 要快。详细介绍看我之前写的 [深入了解 Next.js 中 CSR、SSR、SSG、ISR 四种前端渲染方式](https://binghuis.vercel.app/posts/dive-into-csr-ssr-ssg-isr/)。
 
 ## FCP 首次内容绘制
 
-[首次内容绘制（First Contentful Paint）](https://web.dev/articles/fcp) 衡量的是从页面导航开始到页面有任何内容渲染出来所用的时间。
+[首次内容绘制（First Contentful Paint）](https://web.dev/articles/fcp) 衡量的是从页面导航开始到页面有实际内容渲染出来所用的时间。
 
-FCP 的性能条目是由资源计时 API 获取的，性能条目类型是 `PerformanceResourceTiming`。
+实际内容指的是文本、图片（包括背景图）、`svg` 及 `canvas` 元素（Google 文档写的是非白色 `canvas`，但是我实际测试，白色、黑色甚至透明的 `canvas` 元素都能被 FCP 统计）。
 
-> 任何内容指的是文本、图片（包括背景图）、`svg` 及 `canvas` 元素（Google 文档写的是非白色 `canvas`，但是我实际测试，白色、黑色甚至透明的 `canvas` 元素都能被 FCP 统计）。
+它标志着用户体验中的一个关键点，即页面不再是空白，用户开始看到页面内容。
 
 > **服务端渲染的 FCP 比客户端渲染的 FCP 快。** 因为 SSR 和 CSR 都要处理数据、构建页面，只不过一个发生在服务器一个发生在浏览器。SSR 在服务器上直接构建页面并返回结构完整的 HTML。但由于 CSR 需要通过 JS 在浏览器构建页面，因此需要从服务器获取大量的 JS chunks，这些 JS 文件的加载需要很多时间，导致 CSR 的第一个内容的渲染晚于 SSR。
 >
@@ -57,9 +57,11 @@ FCP 的性能条目是由资源计时 API 获取的，性能条目类型是 `Per
 
 [最大内容绘制（Largest Contentful Paint）](https://web.dev/articles/lcp) 衡量的是从页面导航开始到到页面最显著的（最大的）内容渲染出来所用的时间。
 
-LCP 的性能条目是由 [最大内容绘制 API](https://w3c.github.io/largest-contentful-paint/) 获取的，性能条目类型是 `LargestContentfulPaint`。
+LCP 是衡量页面加载性能的一个核心网页指标，它关注页面上对用户而言最具视觉重要性的内容何时完成渲染。
 
-最大内容指的是页面中可见的最大图片、文本块或视频，其必须包含有价值的信息，以确保对用户具有实际意义。
+现代浏览器的首屏加载速度就是用 LCP 衡量的。
+
+**最大内容** 指的是页面中可见的最大图片、文本块或视频，其必须包含有价值的信息，以确保对用户具有实际意义。
 
 举个例子，占位图等低熵图片通常包含大量相同或相似的像素区域，颜色单一且缺乏细节，无法提供有价值信息，因而不会被计入 LCP 统计。
 
@@ -109,13 +111,11 @@ LCP 的性能条目是由 [最大内容绘制 API](https://w3c.github.io/largest
 <img src='./assets/lg-performanceentry.png'>
 :::
 
-现代浏览器的首屏加载速度就是用 LCP 衡量的，此时标志着用户已经能看到页面最重要的内容了。
-
 ## INP 下次绘制交互时间
 
 [下次绘制交互时间（Interaction to Next Paint）](https://web.dev/articles/inp) 衡量的是整个页面使用期间用户所有交互响应延迟中的最大值。为减少异常值对统计结果的影响，每 50 次交互中，系统会忽略耗时最长的一次操作。
 
-INP 的性能条目是由事件计时 API 获取的，性能条目类型是 [`PerformanceEventTiming`](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceEventTiming)。
+INP 是衡量页面交互性的一个核心网页指标，它关注的是用户与页面交互的响应速度。
 
 INP 统计的用户交互主要包括：点击事件、轻触事件（移动设备）、按键事件。鼠标悬停、滚轮滚动、触屏滑动、页面缩放等操作不计入 INP 的统计。
 
