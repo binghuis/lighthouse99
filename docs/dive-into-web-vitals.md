@@ -150,7 +150,7 @@ INP 取两个阶段中最大的事件响应延迟，因此 INP 的值是 528。
 
 ## 总阻塞时间 TBT
 
-[Total Blocking Time](https://web.dev/articles/tbt) 衡量的是页面从首次内容绘制（FCP）到达到完全可交互（TTI）状态，主线程被阻塞的时间总和。
+[总阻塞时间（Total Blocking Time）](https://web.dev/articles/tbt) 衡量的是页面从首次内容绘制（FCP）到达到完全可交互（TTI）状态，主线程被阻塞的时间总和。
 
 执行时间超过 50ms 的任务就是长任务，一个长任务执行超出 50ms 的时间部分就是任务阻塞时间，所有长任务的阻塞时间总和就是 TBT。
 
@@ -185,11 +185,13 @@ _安静窗口：没有长任务且不超过两个正在进行的 GET 请求。_
 
 ## 累计布局偏移 CLS
 
-Cumulative Layout Shift
+[累计布局偏移（Cumulative Layout Shift）](https://web.dev/articles/cls) 用于衡量视觉稳定性，表示用户遇到意外布局偏移的频率。
 
-CLS 用于衡量视觉稳定性，表示用户遇到意外布局偏移的频率。
+当视口中的可见元素在两个渲染帧之间更改其起始位置时，就发生了布局偏移，这些元素被称为不稳定元素。
 
-CLS 衡量的是页面整个生命周期内发生的所有单个布局偏移得分的总和。
+在一个会话窗口内，所有布局偏移分数的总和即为最大突发布局偏移。会话窗口的计算从首次发生布局偏移时开始，且相邻布局偏移之间的时间间隔不超过 1s，整个窗口的最长持续时间为 5s。会话窗口之间的时间间隔为 1s 及以上。以下图为例，图中共有三个绘画窗口，蓝色柱子是布局移位分数。
+
+<img src='./assets/cls.png' width='360px' />
 
 [尽可能减少布局偏移指南](https://developers.google.com/publisher-tag/guides/minimize-layout-shift)
 

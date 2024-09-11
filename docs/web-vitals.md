@@ -8,7 +8,7 @@ Web Vitals（网页指标）是 Google 推出的一套用于衡量网页用户�
 
 目前网页指标里面最重要且稳定的三个被称为 **核心网页指标**（Core Web Vitals），它们是：
 
-**LCP** 最大内容绘制、**INP** 下次绘制交互时间以及 **CLS** 累计布局偏移，这三个指标分别衡量了页面的 _加载性能_、*互动性*以及*视觉稳定性*。
+**LCP** 最大内容绘制、**INP** 下次绘制交互时间以及 **CLS** 累计布局偏移，这三个指标分别衡量了页面的 _加载性能_、*交互性*及*视觉稳定性*。
 
 核心网页指标还影响着网页在 Google 中的搜索排名，[了解 Google 搜索结果中的网页体验](https://developers.google.com/search/docs/appearance/page-experience#ranking-signal)。
 
